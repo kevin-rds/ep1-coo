@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 /***********************************************************************/
 /*                                                                     */
@@ -12,7 +10,7 @@ import java.util.List;
 /*                                                                     */
 /***********************************************************************/
 
-public class Main {
+public class Main2 {
 
 	/* Constantes relacionadas aos estados que os elementos   */
 	/* do jogo (player, projeteis ou inimigos) podem assumir. */
@@ -53,8 +51,6 @@ public class Main {
 		int i, k;
 		int [] freeArray = new int[amount];
 
-		// inicializa com um valor padrao que siginifica vazio (.length nunca sera um valor valido)
-		// arrays vao de 0 ate length - 1
 		for(i = 0; i < freeArray.length; i++) freeArray[i] = stateArray.length;
 
 		for(i = 0, k = 0; i < stateArray.length && k < amount; i++){
@@ -84,27 +80,30 @@ public class Main {
 
 		/* variáveis do player */
 
-		Player player = new Player(
-			new Coordinates((double) GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90),
-			new Speed(0.25)
-		);
+		int player_state = ACTIVE;						// estado
+		double player_X = GameLib.WIDTH / 2;					// coordenada x
+		double player_Y = GameLib.HEIGHT * 0.90;				// coordenada y
+		double player_VX = 0.25;						// velocidade no eixo x
+		double player_VY = 0.25;						// velocidade no eixo y
+		double player_radius = 12.0;						// raio (tamanho aproximado do player)
+		double player_explosion_start = 0;					// instante do início da explosão
+		double player_explosion_end = 0;					// instante do final da explosão
+		long player_nextShot = currentTime;					// instante a partir do qual pode haver um próximo tiro
 
 		/* variáveis dos projéteis disparados pelo player */
 
-		List<Projectile> projectiles = new ArrayList<>();
-
-		for (int i = 0; i < 10; i++) {
-			projectiles.add(new Projectile());
-		}
+		int [] projectile_states = new int[10];					// estados
+		double [] projectile_X = new double[10];				// coordenadas x
+		double [] projectile_Y = new double[10];				// coordenadas y
+		double [] projectile_VX = new double[10];				// velocidades no eixo x
+		double [] projectile_VY = new double[10];				// velocidades no eixo y
 
 		/* variáveis dos inimigos tipo 1 */
-		List<Enemy> enemies1 = new ArrayList<>();
 
-		for (int i = 0; i < 10; i++) {
-			projectiles.add(new Enemy());
-		}
-		int
 		int [] enemy1_states = new int[10];					// estados
+		double [] enemy1_X = new double[10];					// coordenadas x
+		double [] enemy1_Y = new double[10];					// coordenadas y
+		double [] enemy1_V = new double[10];					// velocidades
 		double [] enemy1_angle = new double[10];				// ângulos (indicam direção do movimento)
 		double [] enemy1_RV = new double[10];					// velocidades de rotação
 		double [] enemy1_explosion_start = new double[10];			// instantes dos inícios das explosões
@@ -261,7 +260,7 @@ public class Main {
 			}
 
 			/* colisões projeteis (player) - inimigos */
-			
+
 			for(int k = 0; k < projectile_states.length; k++){
 
 				for(int i = 0; i < enemy1_states.length; i++){
