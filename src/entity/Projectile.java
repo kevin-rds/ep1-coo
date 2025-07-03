@@ -16,13 +16,6 @@ public class Projectile extends Entity {
         this.color = color;
     }
 
-    public Projectile(double x, double y, double vx, double vy, Color color, State state) {
-        super(x, y, color == Color.RED ? 2.0 : 0.0, state);
-        this.vx = vx;
-        this.vy = vy;
-        this.color = color;
-    }
-
     public void update(long delta) {
         if (state == State.ACTIVE) {
 //            if (color == Color.RED && y > GameLib.HEIGHT) setInactive();

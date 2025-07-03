@@ -11,34 +11,22 @@ import java.util.List;
 public class Enemy2 extends Enemy {
     private static int count = 0; // contagem de inimigos tipo 2 (usada na "formação de voo")
     private static double spawnX = GameLib.WIDTH * 0.20; // coordenada x do próximo inimigo tipo 2 a aparecer
-    private static Long timeToSpawnNext = (long) 1000; // instante em que um novo inimigo deve aparecer
 
-    public Enemy2(long currentTime) {
+    public Enemy2() {
         super(spawnX, -10.0, 12.0);
         this.velocity = 0.42;
         this.angle = (3 * Math.PI) / 2;
         this.rotationVelocity = 0.0;
         count++;
 
-        if (timeToSpawnNext == null) {
-            timeToSpawnNext = currentTime + 7000;
-        }
-
-        if(count < 10){
-            timeToSpawnNext = currentTime + 120;
-        } else {
+        if(count > 10){
             count = 0;
             spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-            timeToSpawnNext = (long) (currentTime + 3000 + Math.random() * 3000);
         }
     }
 
     public static int getCount() {
         return count;
-    }
-
-    public static Long getTimeToSpawnNext() {
-        return timeToSpawnNext;
     }
 
     @Override
@@ -83,7 +71,7 @@ public class Enemy2 extends Enemy {
                 a += Math.random() * Math.PI/6 - Math.PI/12;
                 double vx = Math.cos(a) * 0.30;
                 double vy = Math.sin(a) * 0.30;
-                projectiles.add(new Projectile(x, y, vx, vy, Color.RED, State.ACTIVE));
+                projectiles.add(new Projectile(x, y, vx, vy, Color.RED));
             }
         }
     }

@@ -21,6 +21,8 @@ public class Game {
 		private final Background background1;
 		private final Background background2;
 
+		private EnemySpawner enemySpawner;
+
 		/* Indica que o jogo está em execução */
 		private boolean running;
 		private long currentTime;
@@ -34,6 +36,12 @@ public class Game {
 			this.background2 = new Background(50, Color.DARK_GRAY, 0.045);
 			this.running = true;
 			this.currentTime = System.currentTimeMillis();
+
+			List<EnemySpawnRule> enemySpawnRules = List.of(
+				new TimedSpawnRule(Enemy1::new, currentTime + 2000, 500),
+				new Enemy2SpawnRule(currentTime + 7000, 120, 3000)
+			);
+			this.enemySpawner = new EnemySpawner(enemySpawnRules);
 		}
 
 		public void run() {
@@ -172,14 +180,7 @@ public class Game {
 		}
 
 		private void spawnEnemies() {
-			// instante em que um novo inimigo 1 deve aparecer
-			if (currentTime > Enemy1.getTimeToSpawnNext()) {
-				enemies.add(new Enemy1(currentTime));
-			}
-			// instante em que um novo inimigo 2 deve aparecer
-			if (currentTime > Enemy2.getTimeToSpawnNext()) {
-				enemies.add(new Enemy2(currentTime));
-			}
+			enemies.addAll(enemySpawner.spawn(currentTime));
 		}
 
 		/* Espera, sem fazer nada, até que o instante de tempo atual seja */

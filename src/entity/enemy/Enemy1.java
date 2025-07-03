@@ -9,26 +9,15 @@ import java.awt.Color;
 import java.util.List;
 
 public class Enemy1 extends Enemy {
-    private static Long timeToSpawnNext = (long) 1000; // instante em que um novo inimigo deve aparecer
 
     private long nextShoot; // instantes do próximo tiro
 
-    public Enemy1(long currentTime) {
+    public Enemy1() {
         super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 9.0);
         this.velocity = 0.20 + Math.random() * 0.15;
         this.angle = (3 * Math.PI) / 2;
         this.rotationVelocity = 0.0;
-        this.nextShoot = currentTime + 500;
-
-        if (timeToSpawnNext == null) {
-            timeToSpawnNext = currentTime + 2000;
-        } else {
-            timeToSpawnNext = currentTime + 500;
-        }
-    }
-
-    public static Long getTimeToSpawnNext() {
-        return timeToSpawnNext;
+//        this.nextShoot = currentTime + 500;
     }
 
     @Override
@@ -55,7 +44,7 @@ public class Enemy1 extends Enemy {
             // Provavelmente esta encodando se o projetil eh do inimigo ou nao... eh necessario?
             // Encodar com cor nao fica obscuro?
             // Se precisar manter encapsular isso em um enum que nos mesmos mapeamos
-            projectiles.add(new Projectile(x, y, vx, vy, Color.RED, State.ACTIVE));
+            projectiles.add(new Projectile(x, y, vx, vy, Color.RED));
             nextShoot = currentTime + 200 + (long) (Math.random() * 500);
         }
     }

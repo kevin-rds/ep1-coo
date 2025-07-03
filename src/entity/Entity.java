@@ -11,15 +11,7 @@ public abstract class Entity {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.state = State.INACTIVE;
-    }
-
-    // precisa para o player inicializar com outro estado
-    public Entity(double x, double y, double radius, State state) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.state = state;
+        this.state = State.ACTIVE;
     }
 
     public boolean collidesWith(Entity other) {

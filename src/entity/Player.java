@@ -14,7 +14,7 @@ public class Player extends Entity {
     private long explosionEnd;
 
     public Player(double x, double y) {
-        super(x, y, 12.0, State.ACTIVE);
+        super(x, y, 12.0);
     }
 
     public void update(long delta, long currentTime, List<Projectile> projectiles) {
@@ -35,7 +35,7 @@ public class Player extends Entity {
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
                 if (currentTime > nextShotTime) {
-                    projectiles.add(new Projectile(x, y - 2 * radius, 0.0, -1.0, Color.GREEN, State.ACTIVE));
+                    projectiles.add(new Projectile(x, y - 2 * radius, 0.0, -1.0, Color.GREEN));
                     nextShotTime = currentTime + 100;
                 }
             }
