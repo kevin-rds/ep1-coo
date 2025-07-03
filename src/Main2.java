@@ -1,3 +1,5 @@
+import lib.GameLib;
+
 import java.awt.Color;
 
 /***********************************************************************/
@@ -172,7 +174,7 @@ public class Main2 {
 		/* iniciado interface gráfica */
 
 		GameLib.initGraphics();
-		//GameLib.initGraphics_SAFE_MODE();  // chame esta versão do método caso nada seja desenhado na janela do jogo.
+		//lib.GameLib.initGraphics_SAFE_MODE();  // chame esta versão do método caso nada seja desenhado na janela do jogo.
 
 		/*************************************************************************************************/
 		/*                                                                                               */
@@ -261,6 +263,7 @@ public class Main2 {
 
 			/* colisões projeteis (player) - inimigos */
 
+			// encapsular logica de colisao com inimigos em uma mesma interface (logica repetida entre enemy 1 e enemy 2
 			for(int k = 0; k < projectile_states.length; k++){
 
 				for(int i = 0; i < enemy1_states.length; i++){
@@ -655,7 +658,7 @@ public class Main2 {
 				}
 			}
 
-			/* chamada a display() da classe GameLib atualiza o desenho exibido pela interface do jogo. */
+			/* chamada a display() da classe lib.GameLib atualiza o desenho exibido pela interface do jogo. */
 
 			GameLib.display();
 
