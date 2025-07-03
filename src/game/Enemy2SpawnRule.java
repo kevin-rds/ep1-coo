@@ -3,32 +3,39 @@ package game;
 import entity.enemy.Enemy;
 import entity.enemy.Enemy2;
 
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 public class Enemy2SpawnRule implements EnemySpawnRule {
-    private final EnemySpawnRule fastSpawnRule;
-    private final EnemySpawnRule slowSpawnRule;
-    private final IntSupplier getEnemyCount;
 
-    public Enemy2SpawnRule(long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
-        Supplier<Enemy> enemy2Supplier = Enemy2::new;
-        this.fastSpawnRule = new TimedSpawnRule(enemy2Supplier, timeToSpawnNext, linearIntervalMs);
-        this.slowSpawnRule = new RandomDelaySpawnRule(enemy2Supplier, timeToSpawnNext, randomBaseIntervalMs);
-        this.getEnemyCount = Enemy2::getCount;
+    private final Supplier<Enemy> factory;
+    private final DelayStrategy fastStrategy;
+    private final DelayStrategy slowStrategy;
+
+    private long timeToSpawnNext;
+
+    public Enemy2SpawnRule(Supplier<Enemy> factory, long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
+        this.factory = factory;
+        this.timeToSpawnNext = timeToSpawnNext;
+        this.fastStrategy = new FixedDelayStrategy(linearIntervalMs);
+        this.slowStrategy = new RandomDelayStrategy(randomBaseIntervalMs);
     }
 
-    private EnemySpawnRule selectRule() {
-        return getEnemyCount.getAsInt() < 10 ? fastSpawnRule : slowSpawnRule;
+    private DelayStrategy getCurrentStrategy() {
+        return Enemy2.getCount() < 10 ? fastStrategy : slowStrategy;
     }
 
     @Override
     public boolean shouldSpawn(long currentTime) {
-        return selectRule().shouldSpawn(currentTime);
+        if (currentTime > timeToSpawnNext) {
+            timeToSpawnNext = currentTime + getCurrentStrategy().getNextDelay();
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     public Enemy spawn() {
-        return selectRule().spawn();
+        return factory.get();
     }
 }

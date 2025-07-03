@@ -12,21 +12,25 @@ public class Enemy2 extends Enemy {
     private static int count = 0; // contagem de inimigos tipo 2 (usada na "formação de voo")
     private static double spawnX = GameLib.WIDTH * 0.20; // coordenada x do próximo inimigo tipo 2 a aparecer
 
+    private boolean shootNow;
+
     public Enemy2() {
         super(spawnX, -10.0, 12.0);
         this.velocity = 0.42;
         this.angle = (3 * Math.PI) / 2;
         this.rotationVelocity = 0.0;
-        count++;
 
-        if(count > 10){
-            count = 0;
-            spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-        }
+        if (count < 10) count++;
+        else resetSpawn();
     }
 
     public static int getCount() {
         return count;
+    }
+
+    public static void resetSpawn() {
+        count = 0;
+        spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
     }
 
     @Override
@@ -37,6 +41,7 @@ public class Enemy2 extends Enemy {
 
     @Override
     public void move(long delta) {
+        shootNow = false;
         double previousY = y;
 
         x += velocity * Math.cos(angle) * delta;
@@ -51,11 +56,13 @@ public class Enemy2 extends Enemy {
         }
 
         if (rotationVelocity > 0 && Math.abs(angle - 3 * Math.PI) < 0.05) {
+            shootNow = true;
             rotationVelocity = 0.0;
             angle = 3 * Math.PI;
         }
 
         if (rotationVelocity < 0 && Math.abs(angle) < 0.05) {
+            shootNow = true;
             rotationVelocity = 0.0;
             angle = 0.0;
         }
@@ -63,9 +70,7 @@ public class Enemy2 extends Enemy {
 
     @Override
     public void tryShoot(long currentTime, List<Projectile> projectiles, Entity targetEntity) {
-        // TODO ver se precisa do shootNow = true ou rotationVelocity = 0 ja basta, ja que os dois eram setados nas mesmas condicoes
-        // Unica possivel diferenca, rotationVelocity inicializa como 0.0 (true), enquanto o outro inicializava como false (false)
-        if (rotationVelocity == 0.0) {
+        if (shootNow) {
             double[] angles = { Math.PI/2 + Math.PI/8, Math.PI/2, Math.PI/2 - Math.PI/8 };
             for (double a : angles) {
                 a += Math.random() * Math.PI/6 - Math.PI/12;

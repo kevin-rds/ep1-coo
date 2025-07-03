@@ -21,7 +21,7 @@ public class Game {
 		private final Background background1;
 		private final Background background2;
 
-		private EnemySpawner enemySpawner;
+		private final EnemySpawner enemySpawner;
 
 		/* Indica que o jogo está em execução */
 		private boolean running;
@@ -39,7 +39,7 @@ public class Game {
 
 			List<EnemySpawnRule> enemySpawnRules = List.of(
 				new TimedSpawnRule(Enemy1::new, currentTime + 2000, 500),
-				new Enemy2SpawnRule(currentTime + 7000, 120, 3000)
+				new Enemy2SpawnRule(Enemy2::new, currentTime + 7000, 120, 3000)
 			);
 			this.enemySpawner = new EnemySpawner(enemySpawnRules);
 		}
