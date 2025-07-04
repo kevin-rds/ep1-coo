@@ -33,8 +33,8 @@ public class Game {
 			this.projectiles = new ArrayList<>();
 			this.enemies = new ArrayList<>();
 			this.enemyProjectiles = new ArrayList<>();
-			this.background1 = new Background(20, Color.GRAY, 0.070);
-			this.background2 = new Background(50, Color.DARK_GRAY, 0.045);
+			this.background1 = new Background(20, Color.GRAY, 0.070, 3);
+			this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
 			this.running = true;
 			this.currentTime = System.currentTimeMillis();
 
