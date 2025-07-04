@@ -1,7 +1,8 @@
 package entity.enemy;
 
 import entity.Entity;
-import entity.Projectile;
+import entity.projectiles.EnemyProjectile;
+import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
@@ -76,7 +77,7 @@ public class Enemy2 extends Enemy {
                 a += Math.random() * Math.PI/6 - Math.PI/12;
                 double vx = Math.cos(a) * 0.30;
                 double vy = Math.sin(a) * 0.30;
-                projectiles.add(new Projectile(x, y, vx, vy, Color.RED));
+                projectiles.add(new EnemyProjectile(x, y, vx, vy, Color.RED));
             }
         }
     }

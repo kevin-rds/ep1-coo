@@ -2,7 +2,7 @@ package game;
 
 import entity.enemy.Enemy;
 import entity.Player;
-import entity.Projectile;
+import entity.projectiles.Projectile;
 import entity.enemy.Enemy1;
 import entity.enemy.Enemy2;
 import entity.enemy.EnemyFactory;

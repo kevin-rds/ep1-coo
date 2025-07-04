@@ -1,7 +1,8 @@
 package entity.enemy;
 
 import entity.Entity;
-import entity.Projectile;
+import entity.projectiles.EnemyProjectile;
+import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
@@ -40,11 +41,7 @@ public class Enemy1 extends Enemy {
             double vy = Math.sin(angle) * 0.45 * (-1.0);
 
             // TODO ver se o add verifica se o array esta cheio antes de inserir
-            // TODO verificar o que raios significa Color.RED
-            // Provavelmente esta encodando se o projetil eh do inimigo ou nao... eh necessario?
-            // Encodar com cor nao fica obscuro?
-            // Se precisar manter encapsular isso em um enum que nos mesmos mapeamos
-            projectiles.add(new Projectile(x, y, vx, vy, Color.RED));
+            projectiles.add(new EnemyProjectile(x, y, vx, vy, Color.RED));
             nextShoot = currentTime + 200 + (long) (Math.random() * 500);
         }
     }

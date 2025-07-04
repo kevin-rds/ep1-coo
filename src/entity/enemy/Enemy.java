@@ -1,7 +1,7 @@
 package entity.enemy;
 
 import entity.Entity;
-import entity.Projectile;
+import entity.projectiles.Projectile;
 import util.State;
 
 import java.util.List;

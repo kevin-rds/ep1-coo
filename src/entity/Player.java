@@ -1,5 +1,7 @@
 package entity;
 
+import entity.projectiles.PlayerProjectile;
+import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
@@ -35,7 +37,7 @@ public class Player extends Entity {
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
                 if (currentTime > nextShotTime) {
-                    projectiles.add(new Projectile(x, y - 2 * radius, 0.0, -1.0, Color.GREEN));
+                    projectiles.add(new PlayerProjectile(x, y - 2 * radius, 0.0, -1.0, Color.GREEN));
                     nextShotTime = currentTime + 100;
                 }
             }
