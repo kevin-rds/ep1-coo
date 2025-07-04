@@ -1,18 +1,21 @@
-package game;
+package strategy.spawn.rules;
 
 import entity.enemy.Enemy;
 import entity.enemy.Enemy2;
-import entity.enemy.EnemyFactory;
+import factory.TimedEntityFactory;
+import strategy.delay.DelayStrategy;
+import strategy.delay.FixedDelayStrategy;
+import strategy.delay.RandomDelayStrategy;
 
-public class Enemy2SpawnRule implements EnemySpawnRule {
+public class Enemy2SpawnRule implements SpawnRule<Enemy> {
 
-    private final EnemyFactory factory;
+    private final TimedEntityFactory<Enemy> factory;
     private final DelayStrategy fastStrategy;
     private final DelayStrategy slowStrategy;
 
     private long timeToSpawnNext;
 
-    public Enemy2SpawnRule(EnemyFactory factory, long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
+    public Enemy2SpawnRule(TimedEntityFactory<Enemy> factory, long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
         this.factory = factory;
         this.timeToSpawnNext = timeToSpawnNext;
         this.fastStrategy = new FixedDelayStrategy(linearIntervalMs);

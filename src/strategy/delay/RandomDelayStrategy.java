@@ -1,4 +1,4 @@
-package game;
+package strategy.delay;
 
 public class RandomDelayStrategy implements DelayStrategy {
     private final long delay;

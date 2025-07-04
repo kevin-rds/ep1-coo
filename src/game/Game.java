@@ -6,11 +6,15 @@ import entity.Player;
 import entity.projectiles.Projectile;
 import entity.enemy.Enemy1;
 import entity.enemy.Enemy2;
-import entity.enemy.EnemyFactory;
+import factory.TimedEntityFactory;
 import graphics.Background;
 import lib.GameLib;
+import strategy.spawn.EnemySpawner;
 import strategy.spawn.EntitySpawner;
 import strategy.spawn.PowerUpSpawner;
+import strategy.spawn.rules.Enemy2SpawnRule;
+import strategy.spawn.rules.SpawnRule;
+import strategy.spawn.rules.TimedSpawnRule;
 import util.State;
 
 import java.awt.Color;
@@ -44,14 +48,7 @@ public class Game {
 			this.running = true;
 			this.currentTime = System.currentTimeMillis();
 
-			EnemyFactory enemy1Factory = Enemy1::new;
-			EnemyFactory enemy2Factory = (time) -> new Enemy2();
-
-			List<EnemySpawnRule> enemySpawnRules = List.of(
-				new TimedSpawnRule(enemy1Factory, currentTime + 2000, 500),
-				new Enemy2SpawnRule(enemy2Factory, currentTime + 7000, 120, 3000)
-			);
-			this.enemySpawner = new EnemySpawner(enemySpawnRules);
+			this.enemySpawner = new EnemySpawner(currentTime);
 			this.entitySpawner = new PowerUpSpawner(currentTime);
 		}
 
