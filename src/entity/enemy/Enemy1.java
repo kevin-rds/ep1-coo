@@ -12,12 +12,12 @@ public class Enemy1 extends Enemy {
 
     private long nextShoot; // instantes do próximo tiro
 
-    public Enemy1() {
+    public Enemy1(long currentTime) {
         super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 9.0);
         this.velocity = 0.20 + Math.random() * 0.15;
         this.angle = (3 * Math.PI) / 2;
         this.rotationVelocity = 0.0;
-//        this.nextShoot = currentTime + 500;
+        this.nextShoot = currentTime + 500;
     }
 
     @Override

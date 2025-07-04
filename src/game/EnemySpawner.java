@@ -17,7 +17,7 @@ public class EnemySpawner {
         List<Enemy> newEnemies = new ArrayList<>();
         for (EnemySpawnRule rule : spawnRules) {
             if (rule.shouldSpawn(currentTime)) {
-                newEnemies.add(rule.spawn());
+                newEnemies.add(rule.spawn(currentTime));
             }
         }
         return newEnemies;

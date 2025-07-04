@@ -2,18 +2,17 @@ package game;
 
 import entity.enemy.Enemy;
 import entity.enemy.Enemy2;
-
-import java.util.function.Supplier;
+import entity.enemy.EnemyFactory;
 
 public class Enemy2SpawnRule implements EnemySpawnRule {
 
-    private final Supplier<Enemy> factory;
+    private final EnemyFactory factory;
     private final DelayStrategy fastStrategy;
     private final DelayStrategy slowStrategy;
 
     private long timeToSpawnNext;
 
-    public Enemy2SpawnRule(Supplier<Enemy> factory, long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
+    public Enemy2SpawnRule(EnemyFactory factory, long timeToSpawnNext, long linearIntervalMs, long randomBaseIntervalMs) {
         this.factory = factory;
         this.timeToSpawnNext = timeToSpawnNext;
         this.fastStrategy = new FixedDelayStrategy(linearIntervalMs);
@@ -35,7 +34,7 @@ public class Enemy2SpawnRule implements EnemySpawnRule {
     }
 
     @Override
-    public Enemy spawn() {
-        return factory.get();
+    public Enemy spawn(long currentTime) {
+        return factory.create(currentTime);
     }
 }

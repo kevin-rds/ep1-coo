@@ -1,15 +1,17 @@
 package game;
 
 import entity.enemy.Enemy;
+import entity.enemy.EnemyFactory;
 
+import java.sql.Time;
 import java.util.function.Supplier;
 
 public class TimedSpawnRule implements EnemySpawnRule {
-    private final Supplier<Enemy> factory;
+    private final EnemyFactory factory;
     private final long spawnInterval;
     private long timeToSpawnNext;
 
-    public TimedSpawnRule(Supplier<Enemy> factory, long timeToSpawnNext, long intervalMs) {
+    public TimedSpawnRule(EnemyFactory factory, long timeToSpawnNext, long intervalMs) {
         this.factory = factory;
         this.timeToSpawnNext = timeToSpawnNext;
         this.spawnInterval = intervalMs;
@@ -25,7 +27,7 @@ public class TimedSpawnRule implements EnemySpawnRule {
     }
 
     @Override
-    public Enemy spawn() {
-        return factory.get();
+    public Enemy spawn(long currentTime) {
+        return factory.create(currentTime);
     }
 }

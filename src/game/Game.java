@@ -5,6 +5,7 @@ import entity.Player;
 import entity.Projectile;
 import entity.enemy.Enemy1;
 import entity.enemy.Enemy2;
+import entity.enemy.EnemyFactory;
 import graphics.Background;
 import lib.GameLib;
 import util.State;
@@ -37,9 +38,12 @@ public class Game {
 			this.running = true;
 			this.currentTime = System.currentTimeMillis();
 
+			EnemyFactory enemy1Factory = Enemy1::new;
+			EnemyFactory enemy2Factory = (time) -> new Enemy2();
+
 			List<EnemySpawnRule> enemySpawnRules = List.of(
-				new TimedSpawnRule(Enemy1::new, currentTime + 2000, 500),
-				new Enemy2SpawnRule(Enemy2::new, currentTime + 7000, 120, 3000)
+				new TimedSpawnRule(enemy1Factory, currentTime + 2000, 500),
+				new Enemy2SpawnRule(enemy2Factory, currentTime + 7000, 120, 3000)
 			);
 			this.enemySpawner = new EnemySpawner(enemySpawnRules);
 		}
