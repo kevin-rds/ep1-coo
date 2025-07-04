@@ -87,11 +87,12 @@ public abstract class Boss extends Entity {
         double barX = x;
         double barY = y - radius - 30;
         double healthPercent = (double) currentHealth / maxHealth;
+        double healthBarWidth = barWidth * healthPercent;
 
         GameLib.setColor(Color.GRAY);
         GameLib.fillRect(barX, barY, barWidth, barHeight);
 
         GameLib.setColor(Color.RED);
-        GameLib.fillRect(barX - (double)barWidth/2 + (barWidth * healthPercent)/2, barY, (int) (barWidth * healthPercent), barHeight);
+        GameLib.fillRect(barX - (double)barWidth/2 + healthBarWidth/2, barY, (int) healthBarWidth, barHeight);
     }
 }
