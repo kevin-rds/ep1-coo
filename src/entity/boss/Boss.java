@@ -92,6 +92,6 @@ public abstract class Boss extends Entity {
         GameLib.fillRect(barX, barY, barWidth, barHeight);
 
         GameLib.setColor(Color.RED);
-        GameLib.fillRect(barX - barWidth/2 + (barWidth * healthPercent)/2, barY, (int) (barWidth * healthPercent), barHeight);
+        GameLib.fillRect(barX - (double)barWidth/2 + (barWidth * healthPercent)/2, barY, (int) (barWidth * healthPercent), barHeight);
     }
 }
