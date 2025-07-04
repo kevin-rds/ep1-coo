@@ -1,5 +1,7 @@
 package game;
 
+import entity.Entity;
+import entity.PowerUpEntity;
 import entity.enemy.Enemy;
 import entity.Player;
 import entity.projectiles.Projectile;
@@ -8,6 +10,9 @@ import entity.enemy.Enemy2;
 import entity.enemy.EnemyFactory;
 import graphics.Background;
 import lib.GameLib;
+import powerup.PowerUp;
+import strategy.spawn.EntitySpawner;
+import strategy.spawn.PowerUpSpawner;
 import util.State;
 
 import java.awt.Color;
@@ -19,10 +24,12 @@ public class Game {
 		private final List<Enemy> enemies;
 		private final List<Projectile> projectiles;
 		private final List<Projectile> enemyProjectiles;
+		private final List<PowerUpEntity> powerUps;
 		private final Background background1;
 		private final Background background2;
 
 		private final EnemySpawner enemySpawner;
+		private final EntitySpawner<PowerUpEntity> entitySpawner;
 
 		/* Indica que o jogo está em execução */
 		private boolean running;
@@ -33,6 +40,7 @@ public class Game {
 			this.projectiles = new ArrayList<>();
 			this.enemies = new ArrayList<>();
 			this.enemyProjectiles = new ArrayList<>();
+			this.powerUps = new ArrayList<>();
 			this.background1 = new Background(20, Color.GRAY, 0.070, 3);
 			this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
 			this.running = true;
@@ -46,6 +54,7 @@ public class Game {
 				new Enemy2SpawnRule(enemy2Factory, currentTime + 7000, 120, 3000)
 			);
 			this.enemySpawner = new EnemySpawner(enemySpawnRules);
+			this.entitySpawner = new PowerUpSpawner(currentTime);
 		}
 
 		public void run() {
@@ -114,6 +123,10 @@ public class Game {
 				p.update(delta);
 			}
 
+			for (PowerUpEntity p : powerUps) {
+				p.update(delta, currentTime);
+			}
+
 			checkCollisions();
 			removeInactiveEntities();
 			spawnEnemies();
@@ -140,6 +153,10 @@ public class Game {
 				e.render(currentTime);
 			}
 
+			for (PowerUpEntity p : powerUps) {
+				p.render(currentTime);
+			}
+
 			player.render(currentTime);
 		}
 
@@ -164,6 +181,15 @@ public class Game {
 						break;
 					}
 				}
+
+				/* colisões player - projeteis (inimigo) */
+				for (PowerUpEntity pw : powerUps) {
+					if (pw.isActive() && player.collidesWith(pw)) {
+						player.addPowerUp(pw.getPowerUp());
+						pw.setInactive();
+						break;
+					}
+				}
 			}
 
 			/* colisões projeteis (player) - inimigos */
@@ -175,16 +201,28 @@ public class Game {
 					}
 				}
 			}
+
+			/* colisões projeteis (player) - power ups */
+			for (Projectile p : projectiles) {
+				for (PowerUpEntity pw : powerUps) {
+					if (p.isActive() && pw.isActive() && p.collidesWith(pw)) {
+						pw.setInactive();
+						player.addPowerUp(pw.getPowerUp());
+					}
+				}
+			}
 		}
 
 		private void removeInactiveEntities() {
 			projectiles.removeIf(p -> !p.isActive());
 			enemyProjectiles.removeIf(p -> !p.isActive());
 			enemies.removeIf(e -> e.getState() == State.INACTIVE);
+			powerUps.removeIf(p -> p.getState() == State.INACTIVE);
 		}
 
 		private void spawnEnemies() {
 			enemies.addAll(enemySpawner.spawn(currentTime));
+			powerUps.addAll(entitySpawner.spawn(currentTime));
 		}
 
 		/* Espera, sem fazer nada, até que o instante de tempo atual seja */

@@ -1,11 +1,14 @@
 package entity;
 
-import entity.projectiles.PlayerProjectile;
 import entity.projectiles.Projectile;
 import lib.GameLib;
+import powerup.PowerUp;
+import powerup.PowerUpManager;
+import strategy.shooting.ShootingStrategy;
+import strategy.shooting.SingleShotStrategy;
 import util.State;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 
 public class Player extends Entity {
@@ -14,6 +17,8 @@ public class Player extends Entity {
     private long nextShotTime = 0;
     private long explosionStart;
     private long explosionEnd;
+    private ShootingStrategy shootingStrategy = new SingleShotStrategy();
+    private final PowerUpManager powerUpManager = new PowerUpManager();
 
     public Player(double x, double y) {
         super(x, y, 12.0);
@@ -30,6 +35,8 @@ public class Player extends Entity {
         /* Verificando entrada do usuário (teclado) */
         /********************************************/
         if (state == State.ACTIVE) {
+            powerUpManager.update(this, currentTime);
+
             if (GameLib.iskeyPressed(GameLib.KEY_UP)) y -= delta * vy;
             if (GameLib.iskeyPressed(GameLib.KEY_DOWN)) y += delta * vy;
             if (GameLib.iskeyPressed(GameLib.KEY_LEFT)) x -= delta * vx;
@@ -37,7 +44,7 @@ public class Player extends Entity {
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
                 if (currentTime > nextShotTime) {
-                    projectiles.add(new PlayerProjectile(x, y - 2 * radius, 0.0, -1.0, Color.GREEN));
+                    shootingStrategy.shoot(this, projectiles);
                     nextShotTime = currentTime + 100;
                 }
             }
@@ -65,5 +72,17 @@ public class Player extends Entity {
             GameLib.setColor(Color.BLUE);
             GameLib.drawPlayer(x, y, radius);
         }
+    }
+
+    public void setShootingStrategy(ShootingStrategy strategy) {
+        this.shootingStrategy = strategy;
+    }
+
+    public ShootingStrategy getShootingStrategy() {
+        return shootingStrategy;
+    }
+
+    public void addPowerUp(PowerUp powerUp) {
+        powerUpManager.addPowerUp(powerUp, this);
     }
 }
