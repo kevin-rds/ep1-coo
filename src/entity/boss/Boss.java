@@ -5,6 +5,7 @@ import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +15,27 @@ public abstract class Boss extends Entity {
     protected long explosionStart; // instantes dos inícios das explosões
     protected long explosionEnd; // instantes dos finais da explosões
     protected List<ShieldSegment> shields = new ArrayList<>();
+    protected int maxHealth;
+    protected int currentHealth;
+
+    private long delayedExplosionStart = -1;
 
     public Boss(double x, double y, double radius) {
         super(x, y, radius);
     }
 
+    public void delayedExplode(long currentTime) {
+        for (int i = 0; i < shields.size(); i++) {
+            shields.get(i).delayedExplode(currentTime + i * 200L);
+        }
+        delayedExplosionStart = currentTime + shields.size() * 200L;
+    }
+
     public void explode(long currentTime) {
         state = State.EXPLODING;
         explosionStart = currentTime;
-        explosionEnd = currentTime + 500;
+        explosionEnd = currentTime + 2500;
+        delayedExplosionStart = -1;
     }
 
     public void update(long delta, long currentTime) {
@@ -30,20 +43,55 @@ public abstract class Boss extends Entity {
             setInactive();
         }
 
-        if (state == State.ACTIVE) {
-            move(delta);
-            keepOnScreen();
+        if (delayedExplosionStart != -1 && currentTime > delayedExplosionStart) {
+            explode(currentTime);
         }
+
+        if (!isActive()) return;
+
+        for (ShieldSegment s : shields) {
+            s.update(currentTime);
+        }
+
+        move(delta);
+        keepOnScreen();
     }
 
     public abstract void move(long delta);
     public abstract void render(long currentTime);
-    public abstract List<ShieldSegment> getShields();
     private void keepOnScreen() {
         double margin = radius;
         if (x < margin) x = margin;
         if (x > GameLib.WIDTH - margin) x = GameLib.WIDTH - margin;
         if (y < margin) y = margin;
         if (y > GameLib.HEIGHT - margin) y = GameLib.HEIGHT - margin;
+    }
+
+    public void takeDamage(int amount, long currentTime) {
+        if (state != State.ACTIVE) return;
+
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            explode(currentTime);
+        }
+    }
+
+    public List<ShieldSegment> getShields() {
+        return shields;
+    }
+
+    protected void renderHealthBar(double x, double y, double radius) {
+        int barWidth = 200;
+        int barHeight = 10;
+        double barX = x;
+        double barY = y - radius - 30;
+        double healthPercent = (double) currentHealth / maxHealth;
+
+        GameLib.setColor(Color.GRAY);
+        GameLib.fillRect(barX, barY, barWidth, barHeight);
+
+        GameLib.setColor(Color.RED);
+        GameLib.fillRect(barX, barY, (int) (barWidth * healthPercent), barHeight);
     }
 }

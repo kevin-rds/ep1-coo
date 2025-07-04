@@ -221,7 +221,7 @@ public class Game {
 			for (Projectile p : projectiles) {
 				for (Boss b : bosses) {
 					if (p.isActive() && b.isActive() && p.collidesWith(b)) {
-						b.explode(currentTime);
+						b.takeDamage(5, currentTime);
 						p.setInactive();
 					}
 

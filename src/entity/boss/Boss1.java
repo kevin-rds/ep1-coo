@@ -4,7 +4,6 @@ import lib.GameLib;
 import util.State;
 
 import java.awt.*;
-import java.util.List;
 
 public class Boss1 extends Boss {
 
@@ -18,19 +17,20 @@ public class Boss1 extends Boss {
         this.rotationVelocity = 0.0015;
         this.velocity = 0.05;
 
-        double angleStep = 2 * Math.PI / numShields;
+        this.maxHealth = 100;
+        this.currentHealth = 100;
 
+        createShieldRing();
+    }
+
+    protected void createShieldRing() {
+        double angleStep = 2 * Math.PI / numShields;
         for (int i = 0; i < numShields; i++) {
             double angle = currentAngle + i * angleStep;
-
             double sx = x + Math.cos(angle) * shieldDistance;
             double sy = y + Math.sin(angle) * shieldDistance;
             shields.add(new ShieldSegment(sx, sy, shieldRadius, angle));
         }
-    }
-
-    public List<ShieldSegment> getShields() {
-        return shields;
     }
 
     @Override
@@ -49,13 +49,32 @@ public class Boss1 extends Boss {
 
     @Override
     public void render(long currentTime) {
-        if (state != State.ACTIVE && state != State.EXPLODING) return;
+        if (state == State.EXPLODING) {
+            // TODO encapsular essa logica de explosion
+            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
+            GameLib.drawExplosion(x, y, alpha);
+            return;
+        }
+
+        if (state != State.ACTIVE) return;
 
         GameLib.setColor(Color.RED);
         GameLib.drawDiamond(x, y, radius);
 
         for (ShieldSegment s : shields) {
-            s.render();
+            s.render(currentTime);
+        }
+
+        renderHealthBar(x, y, radius);
+    }
+
+    public void takeDamage(int amount, long currentTime) {
+        if (state != State.ACTIVE) return;
+
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            delayedExplode(currentTime);
         }
     }
 }
