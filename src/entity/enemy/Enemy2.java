@@ -85,7 +85,7 @@ public class Enemy2 extends Enemy {
     @Override
     public void render(long currentTime) {
         if (state == State.EXPLODING) {
-            double alpha = (double) (currentTime - explosionStart) /  (explosionEnd - explosionStart);
+            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
             GameLib.drawExplosion(x, y, alpha);
         }
 
