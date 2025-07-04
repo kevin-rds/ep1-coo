@@ -1,20 +1,18 @@
 package game;
 
 import entity.PowerUpEntity;
+import entity.boss.Boss;
+import entity.boss.ShieldSegment;
 import entity.enemy.Enemy;
 import entity.Player;
+import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
-import entity.enemy.Enemy1;
-import entity.enemy.Enemy2;
-import factory.TimedEntityFactory;
 import graphics.Background;
 import lib.GameLib;
+import strategy.spawn.BossSpawner;
 import strategy.spawn.EnemySpawner;
 import strategy.spawn.EntitySpawner;
 import strategy.spawn.PowerUpSpawner;
-import strategy.spawn.rules.Enemy2SpawnRule;
-import strategy.spawn.rules.SpawnRule;
-import strategy.spawn.rules.TimedSpawnRule;
 import util.State;
 
 import java.awt.Color;
@@ -27,11 +25,13 @@ public class Game {
 		private final List<Projectile> projectiles;
 		private final List<Projectile> enemyProjectiles;
 		private final List<PowerUpEntity> powerUps;
+		private final List<Boss> bosses;
 		private final Background background1;
 		private final Background background2;
 
-		private final EnemySpawner enemySpawner;
-		private final EntitySpawner<PowerUpEntity> entitySpawner;
+		private final EntitySpawner<Enemy> enemySpawner;
+		private final EntitySpawner<Boss> bossSpawner;
+		private final EntitySpawner<PowerUpEntity> powerUpSpawner;
 
 		/* Indica que o jogo está em execução */
 		private boolean running;
@@ -41,6 +41,7 @@ public class Game {
 			this.player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90);
 			this.projectiles = new ArrayList<>();
 			this.enemies = new ArrayList<>();
+			this.bosses = new ArrayList<>();
 			this.enemyProjectiles = new ArrayList<>();
 			this.powerUps = new ArrayList<>();
 			this.background1 = new Background(20, Color.GRAY, 0.070, 3);
@@ -49,7 +50,8 @@ public class Game {
 			this.currentTime = System.currentTimeMillis();
 
 			this.enemySpawner = new EnemySpawner(currentTime);
-			this.entitySpawner = new PowerUpSpawner(currentTime);
+			this.bossSpawner = new BossSpawner(currentTime);
+			this.powerUpSpawner = new PowerUpSpawner(currentTime);
 		}
 
 		public void run() {
@@ -122,6 +124,10 @@ public class Game {
 				p.update(delta, currentTime);
 			}
 
+			for (Boss boss : bosses) {
+				boss.update(delta, currentTime);
+			}
+
 			checkCollisions();
 			removeInactiveEntities();
 			spawnEnemies();
@@ -146,6 +152,10 @@ public class Game {
 
 			for (Enemy e : enemies) {
 				e.render(currentTime);
+			}
+
+			for (Boss b : bosses) {
+				b.render(currentTime);
 			}
 
 			for (PowerUpEntity p : powerUps) {
@@ -177,6 +187,14 @@ public class Game {
 							break;
 						}
 					}
+
+					/* colisões player - bosses */
+					for (Boss b : bosses) {
+						if (b.isActive() && (player.collidesWith(b) || b.getShields().stream().anyMatch(player::collidesWith))) {
+							player.explode(currentTime);
+							break;
+						}
+					}
 				}
 
 				/* colisões player - power ups coletaveis */
@@ -195,6 +213,26 @@ public class Game {
 					if (p.isActive() && e.isActive() && p.collidesWith(e)) {
 						e.explode(currentTime);
 						p.setInactive();
+					}
+				}
+			}
+
+			/* colisões projeteis (player) - bosses */
+			for (Projectile p : projectiles) {
+				for (Boss b : bosses) {
+					if (p.isActive() && b.isActive() && p.collidesWith(b)) {
+						b.explode(currentTime);
+						p.setInactive();
+					}
+
+					for (ShieldSegment s : b.getShields()) {
+						if (p.isActive() && b.isActive() && p.collidesWith(s)) {
+							p.setInactive();
+
+							Projectile deflected = new EnemyProjectile(p.getX(), p.getY(), p.getVX(), p.getVY(), Color.RED);
+							deflected.deflect();
+							enemyProjectiles.add(deflected);
+						}
 					}
 				}
 			}
@@ -218,8 +256,16 @@ public class Game {
 		}
 
 		private void spawnEnemies() {
-			enemies.addAll(enemySpawner.spawn(currentTime));
-			powerUps.addAll(entitySpawner.spawn(currentTime));
+			bosses.addAll(bossSpawner.spawn(currentTime));
+			powerUps.addAll(powerUpSpawner.spawn(currentTime));
+
+			if (!bosses.isEmpty()) {
+				for (Enemy e : enemies) {
+					e.setInactive();
+				}
+			} else {
+				enemies.addAll(enemySpawner.spawn(currentTime));
+			}
 		}
 
 		/* Espera, sem fazer nada, até que o instante de tempo atual seja */

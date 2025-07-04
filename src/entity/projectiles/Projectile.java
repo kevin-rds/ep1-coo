@@ -35,6 +35,28 @@ public abstract class Projectile extends Entity {
         }
     }
 
+    public void deflect() {
+        vx *= -0.7;
+        vy *= -0.7;
+
+        double angle = Math.atan2(vy, vx);
+        double deviation = Math.toRadians(Math.random() * 30 - 15); // entre -15 e 15 graus
+        double speed = Math.sqrt(vx * vx + vy * vy);
+
+        angle += deviation;
+
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+    }
+
+    public double getVX() {
+        return vx;
+    }
+
+    public double getVY() {
+        return vy;
+    }
+
     protected abstract void doRender();
     protected abstract boolean isOffScreen();
 }
