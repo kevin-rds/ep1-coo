@@ -25,7 +25,7 @@ public abstract class Enemy extends Entity {
 
     public void update(long delta, long currentTime, List<Projectile> enemyProjectiles, Entity refEntity) {
         if (state == State.EXPLODING && currentTime > explosionEnd) {
-            state = State.INACTIVE;
+            setInactive();
         }
 
         if (state == State.ACTIVE) {

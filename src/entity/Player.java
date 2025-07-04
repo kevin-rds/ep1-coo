@@ -21,7 +21,7 @@ public class Player extends Entity {
         /* Verificando se a explosão do player já acabou.         */
         /* Ao final da explosão, o player volta a ser controlável */
         if (state == State.EXPLODING && currentTime > explosionEnd) {
-            state = State.ACTIVE;
+            setActive();
         }
 
         /********************************************/

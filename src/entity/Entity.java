@@ -25,9 +25,12 @@ public abstract class Entity {
         return state == State.ACTIVE;
     }
 
-    //TODO fazer um setActive
     public void setInactive() {
         this.state = State.INACTIVE;
+    }
+
+    public void setActive() {
+        this.state = State.ACTIVE;
     }
 
     public State getState() {
