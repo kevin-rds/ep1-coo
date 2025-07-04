@@ -4,6 +4,7 @@ import entity.Player;
 import strategy.shooting.ShootingStrategy;
 import strategy.shooting.TripleShotStrategy;
 
+import java.awt.*;
 import java.util.List;
 
 public class TripleShotPowerUp extends TimedPowerUp {
@@ -12,6 +13,7 @@ public class TripleShotPowerUp extends TimedPowerUp {
 
     public TripleShotPowerUp(long currentTime, long duration) {
         super(currentTime, duration);
+        setColor(Color.YELLOW);
     }
 
     @Override

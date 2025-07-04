@@ -17,6 +17,7 @@ public class Player extends Entity {
     private long nextShotTime = 0;
     private long explosionStart;
     private long explosionEnd;
+    private boolean invincible = false;
     private ShootingStrategy shootingStrategy = new SingleShotStrategy();
     private final PowerUpManager powerUpManager = new PowerUpManager();
 
@@ -84,5 +85,13 @@ public class Player extends Entity {
 
     public void addPowerUp(PowerUp powerUp) {
         powerUpManager.addPowerUp(powerUp, this);
+    }
+
+    public boolean isInvincible() {
+        return invincible;
+    }
+
+    public void setInvincible(boolean value) {
+        this.invincible = value;
     }
 }

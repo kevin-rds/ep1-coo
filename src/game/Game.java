@@ -1,6 +1,5 @@
 package game;
 
-import entity.Entity;
 import entity.PowerUpEntity;
 import entity.enemy.Enemy;
 import entity.Player;
@@ -10,7 +9,6 @@ import entity.enemy.Enemy2;
 import entity.enemy.EnemyFactory;
 import graphics.Background;
 import lib.GameLib;
-import powerup.PowerUp;
 import strategy.spawn.EntitySpawner;
 import strategy.spawn.PowerUpSpawner;
 import util.State;
@@ -166,23 +164,25 @@ public class Game {
 		private void checkCollisions() {
 
 			if (player.getState() == State.ACTIVE) {
-				/* colisões player - projeteis (inimigo) */
-				for (Projectile p : enemyProjectiles) {
-					if (p.isActive() && player.collidesWith(p)) {
-						player.explode(currentTime);
-						break;
+				if (!player.isInvincible()) {
+					/* colisões player - projeteis (inimigo) */
+					for (Projectile p : enemyProjectiles) {
+						if (p.isActive() && player.collidesWith(p)) {
+							player.explode(currentTime);
+							break;
+						}
+					}
+
+					/* colisões player - inimigos */
+					for (Enemy e : enemies) {
+						if (e.isActive() && player.collidesWith(e)) {
+							player.explode(currentTime);
+							break;
+						}
 					}
 				}
 
-				/* colisões player - inimigos */
-				for (Enemy e : enemies) {
-					if (e.isActive() && player.collidesWith(e)) {
-						player.explode(currentTime);
-						break;
-					}
-				}
-
-				/* colisões player - projeteis (inimigo) */
+				/* colisões player - power ups coletaveis */
 				for (PowerUpEntity pw : powerUps) {
 					if (pw.isActive() && player.collidesWith(pw)) {
 						player.addPowerUp(pw.getPowerUp());

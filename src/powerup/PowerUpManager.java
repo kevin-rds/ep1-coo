@@ -3,7 +3,6 @@ package powerup;
 import entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,12 +26,5 @@ public class PowerUpManager {
                 iterator.remove(); // let powerUp handle its own expiration effects
             }
         }
-    }
-
-    public void clear(Player player) {
-        for (PowerUp pu : activePowerUps) {
-            pu.update(player, Long.MAX_VALUE); // force expire
-        }
-        activePowerUps.clear();
     }
 }

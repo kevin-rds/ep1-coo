@@ -1,17 +1,14 @@
 package strategy.spawn.rules;
 
 import entity.Entity;
-import entity.enemy.Enemy;
-import entity.enemy.EnemyFactory;
-import factory.EntityFactory;
-import game.EnemySpawnRule;
+import factory.TimedEntityFactory;
 
 public class TimedSpawnRule<T extends Entity> implements SpawnRule<T> {
-    private final EntityFactory<T> factory;
+    private final TimedEntityFactory<T> factory;
     private final long spawnInterval;
     private long timeToSpawnNext;
 
-    public TimedSpawnRule(EntityFactory<T> factory, long timeToSpawnNext, long intervalMs) {
+    public TimedSpawnRule(TimedEntityFactory<T> factory, long timeToSpawnNext, long intervalMs) {
         this.factory = factory;
         this.timeToSpawnNext = timeToSpawnNext;
         this.spawnInterval = intervalMs;

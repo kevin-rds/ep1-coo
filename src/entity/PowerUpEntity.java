@@ -4,8 +4,6 @@ import lib.GameLib;
 import powerup.PowerUp;
 import util.State;
 
-import java.awt.*;
-
 public class PowerUpEntity extends Entity {
 
     private final PowerUp powerUp;
@@ -43,7 +41,7 @@ public class PowerUpEntity extends Entity {
 
     public void render(long currentTime) {
         if (state == State.ACTIVE) {
-            GameLib.setColor(Color.YELLOW);
+            GameLib.setColor(powerUp.getColor());
             GameLib.drawDiamond(x, y, radius);
         }
     }
