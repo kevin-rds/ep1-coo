@@ -125,7 +125,7 @@ public class Game {
 			}
 
 			for (Boss boss : bosses) {
-				boss.update(delta, currentTime);
+				boss.update(delta, currentTime, enemyProjectiles);
 			}
 
 			checkCollisions();

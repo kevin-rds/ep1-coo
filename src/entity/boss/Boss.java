@@ -11,13 +11,16 @@ import java.util.List;
 
 public abstract class Boss extends Entity {
     protected double rotationVelocity; // velocidades de rotação
-    protected double velocity; // velocidades
+    protected double vx;
+    protected double vy;
     protected long explosionStart; // instantes dos inícios das explosões
     protected long explosionEnd; // instantes dos finais da explosões
     protected List<ShieldSegment> shields = new ArrayList<>();
     protected int maxHealth;
     protected int currentHealth;
-
+    protected double angle = 0;
+    protected long nextShoot;
+    protected long shootDelay = -1;
     private long delayedExplosionStart = -1;
 
     public Boss(double x, double y, double radius) {
@@ -38,13 +41,17 @@ public abstract class Boss extends Entity {
         delayedExplosionStart = -1;
     }
 
-    public void update(long delta, long currentTime) {
+    public void update(long delta, long currentTime, List<Projectile> projectiles) {
         if (state == State.EXPLODING && currentTime > explosionEnd) {
             setInactive();
         }
 
-        if (delayedExplosionStart != -1 && currentTime > delayedExplosionStart) {
-            explode(currentTime);
+        if (delayedExplosionStart != -1) {
+            if (currentTime > delayedExplosionStart) explode(currentTime);
+            else {
+                x += vx * Math.cos(angle * 200) * 5 * delta;
+                angle += rotationVelocity * delta;
+            }
         }
 
         if (!isActive()) return;
@@ -53,11 +60,12 @@ public abstract class Boss extends Entity {
             s.update(currentTime);
         }
 
-        move(delta);
+        move(delta, currentTime);
+        tryShoot(currentTime, projectiles);
         keepOnScreen();
     }
 
-    public abstract void move(long delta);
+    public abstract void move(long delta, long currentTime);
     public abstract void render(long currentTime);
     private void keepOnScreen() {
         double margin = radius;
@@ -95,4 +103,6 @@ public abstract class Boss extends Entity {
         GameLib.setColor(Color.RED);
         GameLib.fillRect(barX - (double)barWidth/2 + healthBarWidth/2, barY, (int) healthBarWidth, barHeight);
     }
+
+    public void tryShoot(long currentTime, List<Projectile> projectiles) {}
 }
