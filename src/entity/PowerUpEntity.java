@@ -12,7 +12,7 @@ public class PowerUpEntity extends Entity {
     private long nextDirectionChange;
 
     public PowerUpEntity(long currentTime, PowerUp powerUp) {
-        super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, Math.random() * (GameLib.HEIGHT / 2) + 10, 9.0);
+        super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, Math.random() * ((float)GameLib.HEIGHT / 2) + 10, 9.0);
         this.powerUp = powerUp;
 
         double angle = Math.random() * 2 * Math.PI;

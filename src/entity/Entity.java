@@ -1,17 +1,20 @@
 package entity;
 
+import graphics.Explosion;
 import util.State;
 
 public abstract class Entity {
     protected double x, y; // coordenadas x e y
     protected double radius;
     protected State state;
+    protected Explosion explosion;
 
     public Entity(double x, double y, double radius) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.state = State.ACTIVE;
+        this.explosion = new Explosion();
     }
 
     public boolean collidesWith(Entity other) {
@@ -19,6 +22,14 @@ public abstract class Entity {
         double dy = this.y - other.y;
         double distance = Math.sqrt(dx * dx + dy * dy);
         return distance < (this.radius + other.radius) * 0.8;
+    }
+
+    public void explode(long currentTime, long duration) {
+        if (state != State.EXPLODING) {
+            state = State.EXPLODING;
+            // Delega o início da explosão para o componente
+            explosion.start(currentTime, this.x, this.y, duration);
+        }
     }
 
     public boolean isActive() {

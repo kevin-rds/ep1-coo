@@ -9,8 +9,6 @@ import java.awt.*;
 public class ShieldSegment extends Entity {
 
     private final double baseAngle;
-    private long explosionStart; // instantes dos inícios das explosões
-    private long explosionEnd; // instantes dos finais da explosões
     private long delayedExplosionStart = -1;
 
     ShieldSegment(double x, double y, double radius, double baseAngle) {
@@ -19,8 +17,11 @@ public class ShieldSegment extends Entity {
     }
 
     public void update(long currentTime) {
-        if (state == State.EXPLODING && currentTime > explosionEnd) {
-            setInactive();
+        if (state == State.EXPLODING) {
+            explosion.update(currentTime);
+            if (!explosion.isActive()) {
+                setInactive();
+            }
         }
 
         if (delayedExplosionStart != -1 && currentTime > delayedExplosionStart) {
@@ -30,9 +31,7 @@ public class ShieldSegment extends Entity {
 
     public void render(long currentTime) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(currentTime);
         }
 
         if (state == State.ACTIVE) {
@@ -55,9 +54,7 @@ public class ShieldSegment extends Entity {
     }
 
     public void explode(long currentTime) {
-        state = State.EXPLODING;
-        explosionStart = currentTime;
-        explosionEnd = currentTime + 700;
+        super.explode(currentTime, 700);
         delayedExplosionStart = -1;
     }
 

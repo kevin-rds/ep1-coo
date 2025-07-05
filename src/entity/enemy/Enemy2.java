@@ -52,7 +52,7 @@ public class Enemy2 extends Enemy {
         double threshold = GameLib.HEIGHT * 0.30;
 
         if (previousY < threshold && y >= threshold) {
-            if(x < GameLib.WIDTH / 2) rotationVelocity = 0.003;
+            if(x < (float)GameLib.WIDTH / 2) rotationVelocity = 0.003;
             else rotationVelocity = -0.003;
         }
 
@@ -85,8 +85,7 @@ public class Enemy2 extends Enemy {
     @Override
     public void render(long currentTime) {
         if (state == State.EXPLODING) {
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(currentTime);
         }
 
         if (state == State.ACTIVE) {

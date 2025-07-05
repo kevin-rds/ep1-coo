@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("============== SPACE SHOOTER ==============");
+		System.out.println("============== EACH em' UP ==============");
 		System.out.println("Escolha o modo de jogo:");
 		System.out.println("1: Modo História (Fases)");
 		System.out.println("2: Modo Infinito (Aleatório)");

@@ -17,7 +17,7 @@ public abstract class PowerUp {
     }
     public boolean conflictsWith(PowerUp powerUp) {
         return conflictsWith(Collections.singletonList(powerUp));
-    };
+    }
 
     public Color getColor() {
         return color;

@@ -1,11 +1,10 @@
 package entity.boss;
 
-import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
 import java.awt.*;
-import java.util.List;
+
 
 public class Boss1 extends Boss {
 
@@ -14,7 +13,7 @@ public class Boss1 extends Boss {
     private final double shieldRadius = 15;
 
     public Boss1() {
-        super(Math.random() * 20.0 + GameLib.WIDTH / 2, GameLib.HEIGHT / 3, 15);
+        super(Math.random() * 20.0 + (float)GameLib.WIDTH / 2, (float)GameLib.HEIGHT / 3, 15);
         this.rotationVelocity = 0.0015;
         this.vx = 0.05;
         this.vy = 0.05;
@@ -52,9 +51,7 @@ public class Boss1 extends Boss {
     @Override
     public void render(long currentTime) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(currentTime);
             return;
         }
 

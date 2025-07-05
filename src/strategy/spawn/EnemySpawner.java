@@ -36,8 +36,6 @@ public class EnemySpawner extends EntitySpawner<Enemy> {
                         newEnemy = new Enemy2();
                     }
 
-                    if (newEnemy != null) {
-                    }
                     return newEnemy;
                 };
 

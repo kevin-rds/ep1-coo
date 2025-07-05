@@ -13,8 +13,6 @@ public abstract class Boss extends Entity {
     protected double rotationVelocity; // velocidades de rotação
     protected double vx;
     protected double vy;
-    protected long explosionStart; // instantes dos inícios das explosões
-    protected long explosionEnd; // instantes dos finais da explosões
     protected List<ShieldSegment> shields = new ArrayList<>();
     protected int maxHealth;
     protected int currentHealth;
@@ -35,15 +33,16 @@ public abstract class Boss extends Entity {
     }
 
     public void explode(long currentTime) {
-        state = State.EXPLODING;
-        explosionStart = currentTime;
-        explosionEnd = currentTime + 2500;
+        super.explode(currentTime, 2500); // Duração de 2500ms
         delayedExplosionStart = -1;
     }
 
     public void update(long delta, long currentTime, List<Projectile> projectiles) {
-        if (state == State.EXPLODING && currentTime > explosionEnd) {
-            setInactive();
+        if (state == State.EXPLODING) {
+            explosion.update(currentTime);
+            if (!explosion.isActive()) {
+                setInactive();
+            }
         }
 
         if (delayedExplosionStart != -1) {

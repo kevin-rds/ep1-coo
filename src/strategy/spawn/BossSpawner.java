@@ -33,8 +33,6 @@ public class BossSpawner extends EntitySpawner<Boss> {
                         newBoss = new Boss2();
                     }
 
-                    if (newBoss != null) {
-                    }
                     return newBoss;
                 };
                 addRule(new SingleSpawnRule<>(factory, levelStartTime + info.getSpawnTime()));

@@ -49,9 +49,7 @@ public class Enemy1 extends Enemy {
     @Override
     public void render(long currentTime) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(currentTime);
         }
 
         if (state == State.ACTIVE) {

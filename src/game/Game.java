@@ -65,7 +65,7 @@ public class Game {
 				lm = new LifeManager(0);
 			}
 		} else {
-			lm = new LifeManager(10);
+			lm = new LifeManager(9999);
 			this.entityManager.setInfiniteModeSpawners(
 					new EnemySpawner(currentTime), new BossSpawner(currentTime)
 			);
