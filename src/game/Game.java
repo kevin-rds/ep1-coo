@@ -2,11 +2,12 @@ package game;
 
 import entity.PowerUpEntity;
 import entity.boss.Boss;
-import entity.boss.ShieldSegment;
 import entity.enemy.Enemy;
 import entity.Player;
-import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.config.ConfigLoader;
+import game.config.Level;
+import game.config.SpawnInfo;
 import game.manager.LifeManager;
 import graphics.Background;
 import lib.GameLib;
@@ -16,47 +17,91 @@ import strategy.spawn.EntitySpawner;
 import strategy.spawn.PowerUpSpawner;
 import util.State;
 
+
+import entity.boss.ShieldSegment;
+import entity.projectiles.EnemyProjectile;
+
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-		private final Player player;
-		private final List<Enemy> enemies;
-		private final List<Projectile> projectiles;
-		private final List<Projectile> enemyProjectiles;
-		private final List<PowerUpEntity> powerUps;
-		private final List<Boss> bosses;
-		private final Background background1;
-		private final Background background2;
-		private final LifeManager lifeManager;
+	private Player player;
+	private List<Enemy> enemies;
+	private List<Projectile> projectiles;
+	private List<Projectile> enemyProjectiles;
+	private List<PowerUpEntity> powerUps;
+	private List<Boss> bosses;
+	private Background background1;
+	private Background background2;
+	private LifeManager lifeManager;
+	private EntitySpawner<Enemy> enemySpawner;
+	private EntitySpawner<Boss> bossSpawner;
+	private EntitySpawner<PowerUpEntity> powerUpSpawner;
+	private boolean running;
+	private long currentTime;
 
-		private final EntitySpawner<Enemy> enemySpawner;
-		private final EntitySpawner<Boss> bossSpawner;
-		private final EntitySpawner<PowerUpEntity> powerUpSpawner;
+	private final GameMode mode;
+	private int currentLevelIndex;
+	private long levelStartTime;
+	private boolean bossSpawnedThisLevel;
 
-		/* Indica que o jogo está em execução */
-		private boolean running;
-		private long currentTime;
+	public Game(GameMode mode) {
+		this.mode = mode;
+		this.running = true;
+		this.currentTime = System.currentTimeMillis();
 
-		public Game() {
-			this.player = new Player(GameLib.WIDTH / 2, GameLib.HEIGHT * 0.90);
-			this.projectiles = new ArrayList<>();
-			this.enemies = new ArrayList<>();
-			this.bosses = new ArrayList<>();
-			this.enemyProjectiles = new ArrayList<>();
-			this.powerUps = new ArrayList<>();
-			this.background1 = new Background(20, Color.GRAY, 0.070, 3);
-			this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
-			this.running = true;
-			this.currentTime = System.currentTimeMillis();
 
-			this.lifeManager = new LifeManager(3);
+		this.projectiles = new ArrayList<>();
+		this.enemies = new ArrayList<>();
+		this.bosses = new ArrayList<>();
+		this.enemyProjectiles = new ArrayList<>();
+		this.powerUps = new ArrayList<>();
+		this.background1 = new Background(20, Color.GRAY, 0.070, 3);
+		this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
+		this.player = new Player(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90);
+		this.powerUpSpawner = new PowerUpSpawner(currentTime); // Powerups podem ser os mesmos por enquanto
 
+		if (this.mode == GameMode.STORY) {
+			try {
+				ConfigLoader.loadGameConfig("config.txt");
+				this.lifeManager = new LifeManager(ConfigLoader.playerLives);
+				this.currentLevelIndex = 0;
+				startNextLevel();
+			} catch (IOException e) {
+				System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());
+				e.printStackTrace();
+				this.running = false;
+			}
+		} else {
+			this.lifeManager = new LifeManager(10);
 			this.enemySpawner = new EnemySpawner(currentTime);
 			this.bossSpawner = new BossSpawner(currentTime);
-			this.powerUpSpawner = new PowerUpSpawner(currentTime);
 		}
+	}
+
+	private void startNextLevel() {
+		if (currentLevelIndex >= ConfigLoader.levels.size()) {
+			System.out.println("VOCE VENCEU O JOGO!");
+			running = false;
+			return;
+		}
+
+		enemies.clear();
+		bosses.clear();
+		enemyProjectiles.clear();
+		projectiles.clear();
+
+		this.levelStartTime = this.currentTime;
+		this.bossSpawnedThisLevel = false;
+		Level currentLevel = ConfigLoader.levels.get(currentLevelIndex);
+		System.out.println("Iniciando fase: " + currentLevel.getConfigFileName());
+
+		List<SpawnInfo> spawnList = currentLevel.getSpawnList();
+		this.enemySpawner = new EnemySpawner(spawnList, levelStartTime);
+		this.bossSpawner = new BossSpawner(spawnList, levelStartTime);
+	}
 
 		public void run() {
 			/* iniciado interface gráfica */
@@ -106,6 +151,7 @@ public class Game {
 			System.exit(0);
 		}
 
+
 		/***************************/
 		/* Atualizações de estados */
 		/***************************/
@@ -116,6 +162,7 @@ public class Game {
 					respawnPlayer();
 				} else {
 					this.running = false;
+					System.out.println("Game Over!");
 				}
 			}
 
@@ -143,8 +190,13 @@ public class Game {
 
 			checkCollisions();
 			removeInactiveEntities();
-			spawnEnemies();
-
+			spawnEntities();
+			if (mode == GameMode.STORY) {
+				if (bossSpawnedThisLevel && bosses.isEmpty()) {
+					currentLevelIndex++;
+					startNextLevel();
+				}
+			}
 			if (GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) running = false;
 		}
 
@@ -275,20 +327,25 @@ public class Game {
 			enemyProjectiles.removeIf(p -> !p.isActive());
 			enemies.removeIf(e -> e.getState() == State.INACTIVE);
 			powerUps.removeIf(p -> p.getState() == State.INACTIVE);
+			bosses.removeIf(b -> b.getState() == State.INACTIVE);
 		}
 
-		private void spawnEnemies() {
-			bosses.addAll(bossSpawner.spawn(currentTime));
-			powerUps.addAll(powerUpSpawner.spawn(currentTime));
-
-			if (!bosses.isEmpty()) {
-				for (Enemy e : enemies) {
-					e.setInactive();
-				}
-			} else {
-				enemies.addAll(enemySpawner.spawn(currentTime));
-			}
+	private void spawnEntities() {
+		List<Boss> newBosses = bossSpawner.spawn(currentTime);
+		if (!newBosses.isEmpty()) {
+			bossSpawnedThisLevel = true;
+			bosses.addAll(newBosses);
 		}
+
+		powerUps.addAll(powerUpSpawner.spawn(currentTime));
+
+
+		if (bosses.isEmpty() || mode == GameMode.INFINITE) {
+			enemies.addAll(enemySpawner.spawn(currentTime));
+		} else if (mode == GameMode.STORY && !bosses.isEmpty()) {
+			enemies.forEach(Enemy::setInactive);
+		}
+	}
 
 		/* Espera, sem fazer nada, até que o instante de tempo atual seja */
 		/* maior ou igual ao instante especificado no parâmetro "time".    */

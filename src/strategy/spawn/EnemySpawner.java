@@ -3,9 +3,14 @@ package strategy.spawn;
 import entity.enemy.Enemy;
 import entity.enemy.Enemy1;
 import entity.enemy.Enemy2;
+import factory.EntityFactory;
 import factory.TimedEntityFactory;
+import game.config.SpawnInfo;
 import strategy.spawn.rules.Enemy2SpawnRule;
+import strategy.spawn.rules.SingleSpawnRule;
 import strategy.spawn.rules.TimedSpawnRule;
+
+import java.util.List;
 
 public class EnemySpawner extends EntitySpawner<Enemy> {
 
@@ -19,4 +24,26 @@ public class EnemySpawner extends EntitySpawner<Enemy> {
         addRule(new TimedSpawnRule<>(enemy1Factory, currentTime + 2000, 500));
         addRule(new Enemy2SpawnRule(enemy2Factory, currentTime + 7000, 120, 3000));
     }
+    public EnemySpawner(List<SpawnInfo> spawnList, long levelStartTime) {
+        super();
+        for (SpawnInfo info : spawnList) {
+            if ("INIMIGO".equalsIgnoreCase(info.getEntityType())) {
+                EntityFactory<Enemy> factory = () -> {
+                    Enemy newEnemy = null;
+                    if (info.getType() == 1) {
+                        newEnemy = new Enemy1(levelStartTime + info.getSpawnTime());
+                    } else if (info.getType() == 2) {
+                        newEnemy = new Enemy2();
+                    }
+
+                    if (newEnemy != null) {
+                    }
+                    return newEnemy;
+                };
+
+                addRule(new SingleSpawnRule<>(factory, levelStartTime + info.getSpawnTime()));
+            }
+        }
+    }
+
 }
