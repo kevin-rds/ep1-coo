@@ -7,6 +7,7 @@ import entity.enemy.Enemy;
 import entity.Player;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.manager.LifeManager;
 import graphics.Background;
 import lib.GameLib;
 import strategy.spawn.BossSpawner;
@@ -28,6 +29,7 @@ public class Game {
 		private final List<Boss> bosses;
 		private final Background background1;
 		private final Background background2;
+		private final LifeManager lifeManager;
 
 		private final EntitySpawner<Enemy> enemySpawner;
 		private final EntitySpawner<Boss> bossSpawner;
@@ -48,6 +50,8 @@ public class Game {
 			this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
 			this.running = true;
 			this.currentTime = System.currentTimeMillis();
+
+			this.lifeManager = new LifeManager(3);
 
 			this.enemySpawner = new EnemySpawner(currentTime);
 			this.bossSpawner = new BossSpawner(currentTime);
@@ -106,6 +110,15 @@ public class Game {
 		/* Atualizações de estados */
 		/***************************/
 		private void update(long delta) {
+
+			if (player.getState() == State.INACTIVE) {
+				if (!lifeManager.isGameOver()) {
+					respawnPlayer();
+				} else {
+					this.running = false;
+				}
+			}
+
 			player.update(delta, currentTime, projectiles);
 
 			for (Projectile p : projectiles) {
@@ -163,6 +176,12 @@ public class Game {
 			}
 
 			player.render(currentTime);
+
+			this.lifeManager.drawPlayerLives();
+		}
+
+		private void respawnPlayer() {
+			player.respawn(this.currentTime);
 		}
 
 		/***************************/
@@ -175,6 +194,7 @@ public class Game {
 					/* colisões player - projeteis (inimigo) */
 					for (Projectile p : enemyProjectiles) {
 						if (p.isActive() && player.collidesWith(p)) {
+							this.lifeManager.loselife();
 							player.explode(currentTime);
 							break;
 						}
@@ -183,6 +203,7 @@ public class Game {
 					/* colisões player - inimigos */
 					for (Enemy e : enemies) {
 						if (e.isActive() && player.collidesWith(e)) {
+							this.lifeManager.loselife();
 							player.explode(currentTime);
 							break;
 						}
@@ -191,6 +212,7 @@ public class Game {
 					/* colisões player - bosses */
 					for (Boss b : bosses) {
 						if (b.isActive() && (player.collidesWith(b) || b.getShields().stream().anyMatch(player::collidesWith))) {
+							this.lifeManager.loselife();
 							player.explode(currentTime);
 							break;
 						}

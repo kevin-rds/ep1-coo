@@ -1,7 +1,6 @@
 package entity.boss;
 
 import entity.Entity;
-import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 

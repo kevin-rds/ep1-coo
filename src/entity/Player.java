@@ -18,6 +18,7 @@ public class Player extends Entity {
     private long explosionStart;
     private long explosionEnd;
     private boolean invincible = false;
+    private long invincibleEndTime = 0;
     private ShootingStrategy shootingStrategy = new SingleShotStrategy();
     private final PowerUpManager powerUpManager = new PowerUpManager();
 
@@ -25,11 +26,17 @@ public class Player extends Entity {
         super(x, y, 12.0);
     }
 
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = y; }
+
     public void update(long delta, long currentTime, List<Projectile> projectiles) {
+        if (this.invincible && currentTime > this.invincibleEndTime) {
+            this.setInvincible(false);
+        }
         /* Verificando se a explosão do player já acabou.         */
         /* Ao final da explosão, o player volta a ser controlável */
         if (state == State.EXPLODING && currentTime > explosionEnd) {
-            setActive();
+            this.state = State.INACTIVE;
         }
 
         /********************************************/
@@ -66,13 +73,31 @@ public class Player extends Entity {
     }
 
     public void render(long currentTime) {
-        if (state == State.EXPLODING) {
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
-        } else {
-            GameLib.setColor(Color.BLUE);
-            GameLib.drawPlayer(x, y, radius);
+        if (state == State.EXPLODING) { //
+            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart); //
+            GameLib.drawExplosion(x, y, alpha); //
+        } else if (state == State.ACTIVE) {
+            // Lógica de piscar quando invencível
+            if (invincible) {
+                // A cada 150ms, o jogador pisca (não é desenhado)
+                if ((currentTime / 150) % 2 == 0) {
+                    GameLib.setColor(Color.BLUE); //
+                    GameLib.drawPlayer(x, y, radius); //
+                }
+            } else {
+                // Desenho normal quando não está invencível
+                GameLib.setColor(Color.BLUE); //
+                GameLib.drawPlayer(x, y, radius); //
+            }
         }
+    }
+
+    public void respawn(long currentTime) {
+        this.setX(GameLib.WIDTH / 2.0);
+        this.setY(GameLib.HEIGHT * 0.90);
+        this.setActive();
+        this.setInvincible(true);
+        this.invincibleEndTime = currentTime + 2000; // O próprio Player define seu tempo!
     }
 
     public void setShootingStrategy(ShootingStrategy strategy) {
