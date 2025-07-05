@@ -33,7 +33,7 @@ public class Player extends Entity {
         if (state == State.EXPLODING) {
             explosion.update(currentTime);
             if(!explosion.isActive()){
-                this.state = State.EXPLODING;
+                this.state = State.INACTIVE;
             }
         }
 

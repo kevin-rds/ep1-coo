@@ -57,8 +57,4 @@ public class ShieldSegment extends Entity {
         super.explode(currentTime, 700);
         delayedExplosionStart = -1;
     }
-
-    public long getExplosionEnd() {
-        return explosionEnd;
-    }
 }

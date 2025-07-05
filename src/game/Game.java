@@ -77,7 +77,7 @@ public class Game {
 	public void run() {
 		/* iniciado interface gráfica */
 		GameLib.initGraphics();
-		//lib.GameLib.initGraphics_SAFE_MODE();  // chame esta versão do método caso nada seja desenhado na janela do jogo.
+		//lib.GameLib.initGraphics_SAFE_MODE();  // chame esta versão do metodo caso nada seja desenhado na janela do jogo.
 
 		/*************************************************************************************************/
 		/*                                                                                               */
