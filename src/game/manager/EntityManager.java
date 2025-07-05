@@ -58,13 +58,13 @@ public class EntityManager {
 
     public boolean spawnAll(long currentTime, boolean isBossActive, GameMode gameMode) {
         boolean bossSpawnedThisFrame = false;
-
-        List<Boss> newBosses = bossSpawner.spawn(currentTime);
-        if (!newBosses.isEmpty()) {
-            bosses.addAll(newBosses);
-            bossSpawnedThisFrame = true;
+        if(bossSpawner!=null){
+            List<Boss> newBosses = bossSpawner.spawn(currentTime);
+            if (!newBosses.isEmpty()) {
+                bosses.addAll(newBosses);
+                bossSpawnedThisFrame = true;
+            }
         }
-
         powerUps.addAll(powerUpSpawner.spawn(currentTime));
 
         if (bosses.isEmpty() || "INFINITE".equals(gameMode)) {

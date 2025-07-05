@@ -19,8 +19,8 @@ public class ConfigLoader {
 
             for (int i = 0; i < numLevels; i++) {
                 String levelFileName = reader.readLine().trim();
-
-                levels.add(loadLevelConfig(levelFileName));
+                String fullPath = "configfiles/" + levelFileName;
+                levels.add(loadLevelConfig(fullPath));
             }
         }
     }

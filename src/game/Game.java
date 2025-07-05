@@ -54,7 +54,7 @@ public class Game {
 		LifeManager lm;
 		if (this.mode == GameMode.STORY) {
 			try {
-				ConfigLoader.loadGameConfig("config.txt");
+				ConfigLoader.loadGameConfig("configfiles/config.txt");
 				lm = new LifeManager(ConfigLoader.playerLives);
 				this.currentLevelIndex = 0;
 				startNextLevel();
@@ -65,9 +65,9 @@ public class Game {
 				lm = new LifeManager(0);
 			}
 		} else {
-			lm = new LifeManager(9999);
+			lm = new LifeManager(3);
 			this.entityManager.setInfiniteModeSpawners(
-					new EnemySpawner(currentTime), new BossSpawner(currentTime)
+					new EnemySpawner(currentTime), null
 			);
 		}
 		this.lifeManager = lm;

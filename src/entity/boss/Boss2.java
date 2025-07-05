@@ -11,15 +11,15 @@ import java.util.List;
 
 public class Boss2 extends Boss {
 
-    public Boss2() {
+    public Boss2(int health, double x, double y) {
         super(Math.random() * 20.0 + (float)GameLib.WIDTH / 2, (float)GameLib.HEIGHT / 2, 15);
         this.rotationVelocity = 0.0015;
         this.vx = 0.15;
         this.vy = 0.00;
         this.shootDelay = 33; // ms
 
-        this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.maxHealth = health;
+        this.currentHealth = health;
     }
 
     protected void draw(double x, double y, double outerRadius, double innerRadius, int points) {

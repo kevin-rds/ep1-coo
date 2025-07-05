@@ -10,17 +10,6 @@ import strategy.spawn.rules.SingleSpawnRule;
 import java.util.List;
 
 public class BossSpawner extends EntitySpawner<Boss> {
-
-    public BossSpawner(long currentTime) {
-        super();
-
-        // TODO remover esse power up hardcoded - precisa ser gerado por configuracao de fase
-        EntityFactory<Boss> boss1Factory = Boss1::new;
-        EntityFactory<Boss> boss2Factory = Boss2::new;
-
-//        addRule(new SingleSpawnRule<>(boss1Factory, currentTime + 2000));
-        addRule(new SingleSpawnRule<>(boss2Factory, currentTime + 2000));
-    }
     public BossSpawner(List<SpawnInfo> spawnList, long levelStartTime) {
         super();
         for (SpawnInfo info : spawnList) {
@@ -28,9 +17,9 @@ public class BossSpawner extends EntitySpawner<Boss> {
                 EntityFactory<Boss> factory = () -> {
                     Boss newBoss = null;
                     if (info.getType() == 1) {
-                        newBoss = new Boss1();
+                        newBoss = new Boss1(info.getHealth(), info.getPosX(), info.getPosY());
                     } else if (info.getType() == 2) {
-                        newBoss = new Boss2();
+                        newBoss = new Boss2(info.getHealth(), info.getPosX(), info.getPosY());
                     }
 
                     return newBoss;

@@ -12,14 +12,14 @@ public class Boss1 extends Boss {
     private final double shieldDistance = 150;
     private final double shieldRadius = 15;
 
-    public Boss1() {
-        super(Math.random() * 20.0 + (float)GameLib.WIDTH / 2, (float)GameLib.HEIGHT / 3, 15);
+    public Boss1(int health, double x, double y) {
+        super(x, y, 15);
         this.rotationVelocity = 0.0015;
         this.vx = 0.05;
         this.vy = 0.05;
 
-        this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.maxHealth = health;
+        this.currentHealth = health;
 
         createShieldRing();
     }
