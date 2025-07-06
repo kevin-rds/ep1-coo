@@ -2,6 +2,7 @@ package entity.boss;
 
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -56,9 +57,9 @@ public class Boss2 extends Boss {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            explosion.render(currentTime);
+            explosion.render(context);
             return;
         }
 

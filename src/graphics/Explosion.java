@@ -1,9 +1,12 @@
 package graphics;
 
+import game.Renderable;
+import game.Updatable;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
-public class Explosion {
+public class Explosion implements Renderable, Updatable {
     private double x, y;
     private long startTime;
     private long duration;
@@ -21,15 +24,15 @@ public class Explosion {
         this.state = State.ACTIVE;
     }
 
-    public void update(long currentTime) {
-        if (isActive() && currentTime > startTime + duration) {
+    public void update(GameContext context) {
+        if (isActive() && context.getCurrentTime() > startTime + duration) {
             this.state = State.INACTIVE;
         }
     }
 
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (isActive()) {
-            double alpha = (double) (currentTime - startTime) / duration;
+            double alpha = (double) (context.getCurrentTime() - startTime) / duration;
             GameLib.drawExplosion(x, y, alpha);
         }
     }

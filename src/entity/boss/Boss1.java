@@ -1,5 +1,6 @@
 package entity.boss;
 
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -49,9 +50,9 @@ public class Boss1 extends Boss {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            explosion.render(currentTime);
+            explosion.render(context);
             return;
         }
 
@@ -61,7 +62,7 @@ public class Boss1 extends Boss {
         GameLib.drawDiamond(x, y, radius);
 
         for (ShieldSegment s : shields) {
-            s.render(currentTime);
+            s.render(context);
         }
 
         renderHealthBar(x, y, radius);

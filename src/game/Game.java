@@ -50,7 +50,7 @@ public class Game {
 		this.background2 = new Background(50, Color.DARK_GRAY, 0.045, 2);
 		this.player = new Player(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90);
 
-		this.entityManager = new EntityManager(currentTime);
+		this.entityManager = new EntityManager(player);
 		this.renderManager = new RenderManager();
 
 		LifeManager lm;
@@ -115,12 +115,14 @@ public class Game {
 					player, background1, background2, lifeManager,
 					entityManager.getEnemies(), entityManager.getBosses(),
 					entityManager.getProjectiles(), entityManager.getEnemyProjectiles(),
-					entityManager.getPowerUps()
+					entityManager.getPowerUps(),
+					entityManager.getAllEntities(),
+					currentTime, delta
 			);
 
 
-			update(context, delta);
-			renderManager.render(context, currentTime, delta);
+			update(context);
+			renderManager.render(context);
 
 			/* chamada a display() da classe lib.GameLib atualiza o desenho exibido pela interface do jogo. */
 			GameLib.display();
@@ -132,7 +134,7 @@ public class Game {
 		System.exit(0);
 	}
 
-	private void update(GameContext context, long delta) {
+	private void update(GameContext context) {
 
 		if (player.getState() == State.INACTIVE) {
 			if (!lifeManager.isGameOver()) {
@@ -143,10 +145,8 @@ public class Game {
 			}
 		}
 
-		context.player.update(delta, currentTime, context.projectiles);
-
-		entityManager.updateAll(context, delta, currentTime);
-		collisionManager.checkCollisions(context, currentTime);
+		entityManager.updateAll(context);
+		collisionManager.checkCollisions(context);
 		entityManager.cleanupAll();
 
 		if (mode == GameMode.STORY && bossSpawnedThisLevel && entityManager.getBosses().isEmpty()) {

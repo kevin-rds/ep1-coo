@@ -2,6 +2,7 @@ package entity.enemy;
 
 import entity.Entity;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import util.State;
 
 import java.util.List;
@@ -19,9 +20,10 @@ public abstract class Enemy extends Entity {
         super.explode(currentTime, 500);
     }
 
-    public void update(long delta, long currentTime, List<Projectile> enemyProjectiles, Entity refEntity) {
+    @Override
+    public void update(GameContext context) {
         if (state == State.EXPLODING) {
-            explosion.update(currentTime);
+            explosion.update(context);
             if(!explosion.isActive()){
                 setInactive();
             }
@@ -31,8 +33,8 @@ public abstract class Enemy extends Entity {
             if (isOffScreen()) {
                 setInactive();
             } else {
-                move(delta);
-                tryShoot(currentTime, enemyProjectiles, refEntity);
+                move(context.getDelta());
+                tryShoot(context.getCurrentTime(), context.getEnemyProjectiles(), context.getPlayer());
             }
         }
     }
@@ -40,5 +42,4 @@ public abstract class Enemy extends Entity {
     public abstract boolean isOffScreen();
     public abstract void move(long delta);
     public abstract void tryShoot(long currentTime, List<Projectile> projectiles, Entity targetEntity);
-    public abstract void render(long currentTime);
 }

@@ -1,9 +1,12 @@
 package entity;
 
+import game.Renderable;
+import game.Updatable;
+import game.context.GameContext;
 import graphics.Explosion;
 import util.State;
 
-public abstract class Entity {
+public abstract class Entity implements Renderable, Updatable {
     protected double x, y; // coordenadas x e y
     protected double radius;
     protected State state;
@@ -51,4 +54,7 @@ public abstract class Entity {
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }
+
+    public abstract void update(GameContext context);
+    public abstract void render(GameContext context);
 }

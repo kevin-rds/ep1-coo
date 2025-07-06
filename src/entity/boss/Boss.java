@@ -2,6 +2,7 @@ package entity.boss;
 
 import entity.Entity;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -37,9 +38,13 @@ public abstract class Boss extends Entity {
         delayedExplosionStart = -1;
     }
 
-    public void update(long delta, long currentTime, List<Projectile> projectiles) {
+    @Override
+    public void update(GameContext context) {
+        long currentTime = context.getCurrentTime();
+        long delta = context.getDelta();
+
         if (state == State.EXPLODING) {
-            explosion.update(currentTime);
+            explosion.update(context);
             if (!explosion.isActive()) {
                 setInactive();
             }
@@ -56,16 +61,15 @@ public abstract class Boss extends Entity {
         if (!isActive()) return;
 
         for (ShieldSegment s : shields) {
-            s.update(currentTime);
+            s.update(context);
         }
 
         move(delta, currentTime);
-        tryShoot(currentTime, projectiles);
+        tryShoot(currentTime, context.getProjectiles());
         keepOnScreen();
     }
 
     public abstract void move(long delta, long currentTime);
-    public abstract void render(long currentTime);
     private void keepOnScreen() {
         double margin = radius;
         if (x < margin) x = margin;

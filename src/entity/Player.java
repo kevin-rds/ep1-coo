@@ -1,6 +1,6 @@
 package entity;
 
-import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import powerup.InvincibilityPowerUp;
 import powerup.PowerUp;
@@ -10,7 +10,6 @@ import strategy.shooting.SingleShotStrategy;
 import util.State;
 
 import java.awt.Color;
-import java.util.List;
 
 public class Player extends Entity {
     private double vx = 0.25;
@@ -27,11 +26,15 @@ public class Player extends Entity {
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
 
-    public void update(long delta, long currentTime, List<Projectile> projectiles) {
+    @Override
+    public void update(GameContext context) {
+        long delta = context.getDelta();
+        long currentTime = context.getCurrentTime();
+
         /* Verificando se a explosão do player já acabou.         */
         /* Ao final da explosão, o player volta a ser controlável */
         if (state == State.EXPLODING) {
-            explosion.update(currentTime);
+            explosion.update(context);
             if(!explosion.isActive()){
                 this.state = State.INACTIVE;
             }
@@ -50,7 +53,7 @@ public class Player extends Entity {
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
                 if (currentTime > nextShotTime) {
-                    shootingStrategy.shoot(this, projectiles);
+                    shootingStrategy.shoot(this, context.getProjectiles());
                     nextShotTime = currentTime + 100;
                 }
             }
@@ -68,9 +71,12 @@ public class Player extends Entity {
         super.explode(currentTime, 2000);
     }
 
-    public void render(long currentTime) {
+    @Override
+    public void render(GameContext context) {
+        long currentTime = context.getCurrentTime();
+
         if (state == State.EXPLODING) { //
-            explosion.render(currentTime);
+            explosion.render(context);
         } else if (state == State.ACTIVE) {
             // Lógica de piscar quando invencível
             if (invincible) {

@@ -1,10 +1,11 @@
 package entity.boss;
 
 import entity.Entity;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ShieldSegment extends Entity {
 
@@ -16,9 +17,11 @@ public class ShieldSegment extends Entity {
         this.baseAngle = baseAngle;
     }
 
-    public void update(long currentTime) {
+    @Override
+    public void update(GameContext context) {
+        long currentTime = context.getCurrentTime();
         if (state == State.EXPLODING) {
-            explosion.update(currentTime);
+            explosion.update(context);
             if (!explosion.isActive()) {
                 setInactive();
             }
@@ -29,9 +32,10 @@ public class ShieldSegment extends Entity {
         }
     }
 
-    public void render(long currentTime) {
+    @Override
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            explosion.render(currentTime);
+            explosion.render(context);
         }
 
         if (state == State.ACTIVE) {

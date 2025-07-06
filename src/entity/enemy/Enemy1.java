@@ -3,6 +3,7 @@ package entity.enemy;
 import entity.Entity;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -46,9 +47,9 @@ public class Enemy1 extends Enemy {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            explosion.render(currentTime);
+            explosion.render(context);
         }
 
         if (state == State.ACTIVE) {

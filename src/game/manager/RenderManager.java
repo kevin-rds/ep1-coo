@@ -1,31 +1,15 @@
 package game.manager;
 
-import entity.PowerUpEntity;
-import entity.boss.Boss;
-import entity.enemy.Enemy;
-import entity.projectiles.Projectile;
+import entity.Entity;
 import game.context.GameContext;
 
 public class RenderManager {
-    public void render(GameContext context, long currentTime, long delta) {
-        context.background2.render(delta);
-        context.background1.render(delta);
-        for (Projectile p : context.projectiles) {
-            p.render();
+    public void render(GameContext context) {
+        for (Entity e : context.getAllEntities()) {
+            e.render(context);
         }
-        for (Projectile p : context.enemyProjectiles) {
-            p.render();
-        }
-        for (Enemy e : context.enemies) {
-            e.render(currentTime);
-        }
-        for (Boss b : context.bosses) {
-            b.render(currentTime);
-        }
-        for (PowerUpEntity p : context.powerUps) {
-            p.render(currentTime);
-        }
-        context.player.render(currentTime);
-        context.lifeManager.drawPlayerLives();
+        context.getLifeManager().drawPlayerLives();
+        context.getBackground1().render(context);
+        context.getBackground2().render(context);
     }
 }

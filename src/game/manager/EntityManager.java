@@ -1,5 +1,7 @@
 package game.manager;
 
+import entity.Entity;
+import entity.Player;
 import entity.PowerUpEntity;
 import entity.boss.Boss;
 import entity.enemy.Enemy;
@@ -7,7 +9,6 @@ import entity.projectiles.Projectile;
 import game.GameMode;
 import game.context.GameContext;
 import strategy.spawn.EntitySpawner;
-import strategy.spawn.PowerUpSpawner;
 import util.State;
 
 import java.util.ArrayList;
@@ -20,11 +21,15 @@ public class EntityManager {
     private final List<Projectile> enemyProjectiles = new ArrayList<>();
     private final List<PowerUpEntity> powerUps = new ArrayList<>();
 
+    private final Player player;
+
+
     private EntitySpawner<Enemy> enemySpawner;
     private EntitySpawner<Boss> bossSpawner;
     private EntitySpawner<PowerUpEntity> powerUpSpawner;
 
-    public EntityManager(long currentTime) {
+    public EntityManager(Player player) {
+        this.player = player;
     }
 
     public List<Enemy> getEnemies() { return enemies; }
@@ -32,26 +37,20 @@ public class EntityManager {
     public List<Projectile> getProjectiles() { return projectiles; }
     public List<Projectile> getEnemyProjectiles() { return enemyProjectiles; }
     public List<PowerUpEntity> getPowerUps() { return powerUps; }
+    public List<Entity> getAllEntities() {
+        List<Entity> allEntities = new ArrayList<>();
+        allEntities.add(player);
+        allEntities.addAll(enemies);
+        allEntities.addAll(bosses);
+        allEntities.addAll(projectiles);
+        allEntities.addAll(enemyProjectiles);
+        allEntities.addAll(powerUps);
+        return allEntities;
+    }
 
-    public void updateAll(GameContext context, long delta, long currentTime) {
-        for (Projectile p : projectiles){
-            p.update(delta);
-        }
-
-        for (Enemy enemy : enemies) {
-            enemy.update(delta, currentTime, enemyProjectiles, context.player);
-        }
-
-        for (Projectile p : enemyProjectiles) {
-            p.update(delta);
-        }
-
-        for (PowerUpEntity p : powerUps) {
-            p.update(delta, currentTime);
-        }
-
-        for (Boss boss : bosses) {
-            boss.update(delta, currentTime, enemyProjectiles);
+    public void updateAll(GameContext context) {
+        for (Entity e : getAllEntities()){
+            e.update(context);
         }
     }
 
