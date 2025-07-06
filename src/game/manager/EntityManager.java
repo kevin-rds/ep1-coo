@@ -82,9 +82,10 @@ public class EntityManager {
         bosses.removeIf(b -> b.getState() == State.INACTIVE);
     }
 
-    public void setInfiniteModeSpawners(EntitySpawner<Enemy> enemySpawner, EntitySpawner<Boss> bossSpawner) {
+    public void setInfiniteModeSpawners(EntitySpawner<Enemy> enemySpawner, EntitySpawner<Boss> bossSpawner, EntitySpawner<PowerUpEntity> powerUpSpawner) {
         this.enemySpawner = enemySpawner;
         this.bossSpawner = bossSpawner;
+        this.powerUpSpawner = powerUpSpawner;
     }
 
     public void setStoryModeSpawners(EntitySpawner<Enemy> enemySpawner, EntitySpawner<Boss> bossSpawner, EntitySpawner<PowerUpEntity> powerUpSpawner) {

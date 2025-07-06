@@ -69,7 +69,7 @@ public class Game {
 		} else {
 			lm = new LifeManager(3);
 			this.entityManager.setInfiniteModeSpawners(
-					new EnemySpawner(currentTime), null
+					new EnemySpawner(currentTime), null, new PowerUpSpawner(currentTime)
 			);
 		}
 		this.lifeManager = lm;
