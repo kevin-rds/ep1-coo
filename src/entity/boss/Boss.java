@@ -65,7 +65,7 @@ public abstract class Boss extends Entity {
         }
 
         move(delta, currentTime);
-        tryShoot(currentTime, context.getProjectiles());
+        tryShoot(currentTime, context.getEnemyProjectiles());
         keepOnScreen();
     }
 
