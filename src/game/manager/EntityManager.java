@@ -22,10 +22,9 @@ public class EntityManager {
 
     private EntitySpawner<Enemy> enemySpawner;
     private EntitySpawner<Boss> bossSpawner;
-    private final EntitySpawner<PowerUpEntity> powerUpSpawner;
+    private EntitySpawner<PowerUpEntity> powerUpSpawner;
 
     public EntityManager(long currentTime) {
-        this.powerUpSpawner = new PowerUpSpawner(currentTime);
     }
 
     public List<Enemy> getEnemies() { return enemies; }
@@ -89,9 +88,10 @@ public class EntityManager {
         this.bossSpawner = bossSpawner;
     }
 
-    public void setStoryModeSpawners(EntitySpawner<Enemy> enemySpawner, EntitySpawner<Boss> bossSpawner) {
+    public void setStoryModeSpawners(EntitySpawner<Enemy> enemySpawner, EntitySpawner<Boss> bossSpawner, EntitySpawner<PowerUpEntity> powerUpSpawner) {
         this.enemySpawner = enemySpawner;
         this.bossSpawner = bossSpawner;
+        this.powerUpSpawner = powerUpSpawner;
         this.enemies.clear();
         this.bosses.clear();
         this.enemyProjectiles.clear();

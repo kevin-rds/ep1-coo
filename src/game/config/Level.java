@@ -1,6 +1,10 @@
 package game.config;
 
+import entity.EntityType;
+import game.config.spawn.SpawnInfo;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Level {
     private final List<SpawnInfo> spawnList;
@@ -14,6 +18,14 @@ public class Level {
 
     public List<SpawnInfo> getSpawnList() {
         return spawnList;
+    }
+
+    public <T extends SpawnInfo> List<T> getSpawnList(EntityType entityType, Class<T> clazz) {
+        return spawnList.stream()
+                .filter(spawnInfo -> spawnInfo.getEntityType() == entityType)
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .collect(Collectors.toList());
     }
 
     public boolean isCompleted() {

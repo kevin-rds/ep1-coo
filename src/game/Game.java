@@ -1,10 +1,12 @@
 package game;
 
 
+import entity.EntityType;
 import entity.Player;
-import game.config.ConfigLoader;
-import game.config.Level;
-import game.config.SpawnInfo;
+import game.config.*;
+import game.config.spawn.boss.BossSpawnInfo;
+import game.config.spawn.enemy.EnemySpawnInfo;
+import game.config.spawn.powerup.PowerUpSpawnInfo;
 import game.manager.CollisionManager;
 import game.manager.EntityManager;
 import game.manager.LifeManager;
@@ -15,11 +17,11 @@ import strategy.spawn.BossSpawner;
 import strategy.spawn.EnemySpawner;
 import game.context.GameContext;
 
+import strategy.spawn.PowerUpSpawner;
 import util.State;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.List;
 
 public class Game {
 
@@ -172,10 +174,10 @@ public class Game {
 		Level currentLevel = ConfigLoader.levels.get(currentLevelIndex);
 		System.out.println("Iniciando fase: " + currentLevel.getConfigFileName());
 
-		List<SpawnInfo> spawnList = currentLevel.getSpawnList();
 		entityManager.setStoryModeSpawners(
-				new EnemySpawner(spawnList, levelStartTime),
-				new BossSpawner(spawnList, levelStartTime)
+				new EnemySpawner(currentLevel.getSpawnList(EntityType.ENEMY, EnemySpawnInfo.class), levelStartTime),
+				new BossSpawner(currentLevel.getSpawnList(EntityType.BOSS, BossSpawnInfo.class), levelStartTime),
+				new PowerUpSpawner(currentLevel.getSpawnList(EntityType.POWERUP, PowerUpSpawnInfo.class), levelStartTime)
 		);
 	}
 

@@ -22,6 +22,17 @@ public class PowerUpEntity extends Entity {
         nextDirectionChange = currentTime + 1000 + (long)(Math.random() * 2000);
     }
 
+    public PowerUpEntity(long currentTime, PowerUp powerUp, double x, double y) {
+        super(x, y, 9.0);
+        this.powerUp = powerUp;
+
+        double angle = Math.random() * 2 * Math.PI;
+        dx = Math.cos(angle) * baseDx;
+        dy = Math.sin(angle) * baseDy;
+
+        nextDirectionChange = currentTime + 1000 + (long)(Math.random() * 2000);
+    }
+
     public void update(long delta, long currentTime) {
         if (state != State.ACTIVE) return;
 

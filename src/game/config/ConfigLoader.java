@@ -1,5 +1,11 @@
 package game.config;
 
+import game.config.spawn.SpawnInfo;
+import game.config.spawn.SpawnInfoParser;
+import game.config.spawn.boss.BossSpawnInfoParser;
+import game.config.spawn.enemy.EnemySpawnInfoParser;
+import game.config.spawn.powerup.PowerUpSpawnInfoParser;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +16,11 @@ public class ConfigLoader {
 
     public static int playerLives;
     public static List<Level> levels = new ArrayList<>();
+    private static final List<SpawnInfoParser> spawnParsers = List.of(
+            new EnemySpawnInfoParser(),
+            new BossSpawnInfoParser(),
+            new PowerUpSpawnInfoParser()
+    );
 
     public static void loadGameConfig(String mainConfigFilePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(mainConfigFilePath))) {
@@ -34,19 +45,18 @@ public class ConfigLoader {
 
                 String[] parts = line.split(" ");
                 String entityType = parts[0];
-                int type = Integer.parseInt(parts[1]);
 
-                if ("INIMIGO".equalsIgnoreCase(entityType)) {
-                    long when = Long.parseLong(parts[2]);
-                    double x = Double.parseDouble(parts[3]);
-                    double y = Double.parseDouble(parts[4]);
-                    spawnList.add(new SpawnInfo(entityType, type, when, x, y));
-                } else if ("CHEFE".equalsIgnoreCase(entityType)) {
-                    int health = Integer.parseInt(parts[2]);
-                    long when = Long.parseLong(parts[3]);
-                    double x = Double.parseDouble(parts[4]);
-                    double y = Double.parseDouble(parts[5]);
-                    spawnList.add(new SpawnInfo(entityType, type, health, when, x, y));
+                boolean parsed = false;
+                for (SpawnInfoParser parser : spawnParsers) {
+                    if (parser.canParse(entityType)) {
+                        spawnList.add(parser.parse(parts));
+                        parsed = true;
+                        break;
+                    }
+                }
+
+                if (!parsed) {
+                    throw new IllegalArgumentException("Tipo de entidade desconhecida: " + entityType);
                 }
             }
         }
