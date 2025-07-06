@@ -1,14 +1,10 @@
 package game.manager;
 
-import entity.Player;
+import entity.PowerUpEntity;
 import entity.boss.Boss;
 import entity.enemy.Enemy;
 import entity.projectiles.Projectile;
-import entity.PowerUpEntity;
 import game.context.GameContext;
-import graphics.Background;
-
-import java.util.List;
 
 public class RenderManager {
     public void render(GameContext context, long currentTime, long delta) {

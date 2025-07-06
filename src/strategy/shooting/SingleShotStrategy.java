@@ -4,7 +4,7 @@ import entity.Player;
 import entity.projectiles.PlayerProjectile;
 import entity.projectiles.Projectile;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class SingleShotStrategy implements ShootingStrategy {

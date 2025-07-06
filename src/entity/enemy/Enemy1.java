@@ -40,7 +40,6 @@ public class Enemy1 extends Enemy {
             double vx = Math.cos(angle) * 0.45;
             double vy = Math.sin(angle) * 0.45 * (-1.0);
 
-            // TODO ver se o add verifica se o array esta cheio antes de inserir
             projectiles.add(new EnemyProjectile(x, y, vx, vy, Color.RED));
             nextShoot = currentTime + 200 + (long) (Math.random() * 500);
         }

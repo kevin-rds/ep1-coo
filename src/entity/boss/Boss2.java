@@ -1,12 +1,11 @@
 package entity.boss;
 
-import entity.Entity;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
 import lib.GameLib;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class Boss2 extends Boss {

@@ -11,7 +11,6 @@ public class PowerUpSpawner extends EntitySpawner<PowerUpEntity> {
     public PowerUpSpawner(long currentTime) {
         super();
 
-        // TODO remover esse power up hardcoded - precisa ser gerado por configuracao de fase
         TimedEntityFactory<PowerUpEntity> tripleShotPowerUpFactory = (time) -> new PowerUpEntity(time, new TripleShotPowerUp(time, 7000));
         TimedEntityFactory<PowerUpEntity> invicibilityPowerUpFactory = (time) -> new PowerUpEntity(time, new InvincibilityPowerUp(time, 5000));
         addRule(new TimedSpawnRule<>(tripleShotPowerUpFactory, currentTime + 1000, 2 * 1000));

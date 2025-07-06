@@ -3,7 +3,7 @@ package powerup;
 import entity.Player;
 import lib.GameLib;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class InvincibilityPowerUp extends TimedPowerUp {

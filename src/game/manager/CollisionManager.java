@@ -9,7 +9,7 @@ import entity.PowerUpEntity;
 import game.context.GameContext;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class CollisionManager {
     private final LifeManager lifeManager;

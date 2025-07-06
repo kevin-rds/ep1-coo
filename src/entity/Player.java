@@ -9,7 +9,7 @@ import strategy.shooting.ShootingStrategy;
 import strategy.shooting.SingleShotStrategy;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class Player extends Entity {

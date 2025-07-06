@@ -8,7 +8,6 @@ public class SpawnInfo {
     private final double posY;
     private final int health;
 
-
     public SpawnInfo(String entityType, int type, long spawnTime, double posX, double posY) {
         if (!"INIMIGO".equalsIgnoreCase(entityType)) {
             throw new IllegalArgumentException("EntityType must be INIMIGO for this constructor.");

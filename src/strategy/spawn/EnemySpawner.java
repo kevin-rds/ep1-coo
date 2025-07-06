@@ -17,7 +17,6 @@ public class EnemySpawner extends EntitySpawner<Enemy> {
     public EnemySpawner(long currentTime) {
         super();
 
-        // TODO remover esse power up hardcoded - precisa ser gerado por configuracao de fase
         TimedEntityFactory<Enemy> enemy1Factory = Enemy1::new;
         TimedEntityFactory<Enemy> enemy2Factory = (time) -> new Enemy2();
 
