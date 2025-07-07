@@ -65,9 +65,9 @@ public class EntityManager {
         }
         powerUps.addAll(powerUpSpawner.spawn(currentTime));
 
-        if (bosses.isEmpty() || "INFINITE".equals(gameMode)) {
+        if (bosses.isEmpty() || gameMode.equals(GameMode.INFINITE)) {
             enemies.addAll(enemySpawner.spawn(currentTime));
-        } else if ("STORY".equals(gameMode) && !bosses.isEmpty()) {
+        } else if (gameMode.equals(GameMode.STORY)) {
             enemies.forEach(Enemy::setInactive);
         }
 
