@@ -4,7 +4,7 @@ import entity.Player;
 import strategy.shooting.ShootingStrategy;
 import strategy.shooting.TripleShotStrategy;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class TripleShotPowerUp extends TimedPowerUp {

@@ -1,5 +1,6 @@
 package entity;
 
+import game.context.GameContext;
 import lib.GameLib;
 import powerup.PowerUp;
 import util.State;
@@ -12,7 +13,7 @@ public class PowerUpEntity extends Entity {
     private long nextDirectionChange;
 
     public PowerUpEntity(long currentTime, PowerUp powerUp) {
-        super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, Math.random() * (GameLib.HEIGHT / 2) + 10, 9.0);
+        super(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, Math.random() * ((float)GameLib.HEIGHT / 2) + 10, 9.0);
         this.powerUp = powerUp;
 
         double angle = Math.random() * 2 * Math.PI;
@@ -22,7 +23,22 @@ public class PowerUpEntity extends Entity {
         nextDirectionChange = currentTime + 1000 + (long)(Math.random() * 2000);
     }
 
-    public void update(long delta, long currentTime) {
+    public PowerUpEntity(long currentTime, PowerUp powerUp, double x, double y) {
+        super(x, y, 9.0);
+        this.powerUp = powerUp;
+
+        double angle = Math.random() * 2 * Math.PI;
+        dx = Math.cos(angle) * baseDx;
+        dy = Math.sin(angle) * baseDy;
+
+        nextDirectionChange = currentTime + 1000 + (long)(Math.random() * 2000);
+    }
+
+    @Override
+    public void update(GameContext context) {
+        long delta = context.getDelta();
+        long currentTime = context.getCurrentTime();
+
         if (state != State.ACTIVE) return;
 
         x += delta * dx;
@@ -39,7 +55,8 @@ public class PowerUpEntity extends Entity {
         }
     }
 
-    public void render(long currentTime) {
+    @Override
+    public void render(GameContext context) {
         if (state == State.ACTIVE) {
             GameLib.setColor(powerUp.getColor());
             GameLib.drawDiamond(x, y, radius);

@@ -2,6 +2,7 @@ package entity.boss;
 
 import entity.Entity;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -13,8 +14,6 @@ public abstract class Boss extends Entity {
     protected double rotationVelocity; // velocidades de rotação
     protected double vx;
     protected double vy;
-    protected long explosionStart; // instantes dos inícios das explosões
-    protected long explosionEnd; // instantes dos finais da explosões
     protected List<ShieldSegment> shields = new ArrayList<>();
     protected int maxHealth;
     protected int currentHealth;
@@ -35,15 +34,20 @@ public abstract class Boss extends Entity {
     }
 
     public void explode(long currentTime) {
-        state = State.EXPLODING;
-        explosionStart = currentTime;
-        explosionEnd = currentTime + 2500;
+        super.explode(currentTime, 2500); // Duração de 2500ms
         delayedExplosionStart = -1;
     }
 
-    public void update(long delta, long currentTime, List<Projectile> projectiles) {
-        if (state == State.EXPLODING && currentTime > explosionEnd) {
-            setInactive();
+    @Override
+    public void update(GameContext context) {
+        long currentTime = context.getCurrentTime();
+        long delta = context.getDelta();
+
+        if (state == State.EXPLODING) {
+            explosion.update(context);
+            if (!explosion.isActive()) {
+                setInactive();
+            }
         }
 
         if (delayedExplosionStart != -1) {
@@ -57,16 +61,15 @@ public abstract class Boss extends Entity {
         if (!isActive()) return;
 
         for (ShieldSegment s : shields) {
-            s.update(currentTime);
+            s.update(context);
         }
 
         move(delta, currentTime);
-        tryShoot(currentTime, projectiles);
+        tryShoot(currentTime, context.getEnemyProjectiles());
         keepOnScreen();
     }
 
     public abstract void move(long delta, long currentTime);
-    public abstract void render(long currentTime);
     private void keepOnScreen() {
         double margin = radius;
         if (x < margin) x = margin;

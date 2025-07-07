@@ -2,7 +2,7 @@ package powerup;
 
 import entity.Player;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public abstract class PowerUp {
     }
     public boolean conflictsWith(PowerUp powerUp) {
         return conflictsWith(Collections.singletonList(powerUp));
-    };
+    }
 
     public Color getColor() {
         return color;

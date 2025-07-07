@@ -1,25 +1,25 @@
 package entity.boss;
 
-import entity.Entity;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class Boss2 extends Boss {
 
-    public Boss2() {
-        super(Math.random() * 20.0 + GameLib.WIDTH / 2, GameLib.HEIGHT / 2, 15);
+    public Boss2(int health, double x, double y) {
+        super(Math.random() * 20.0 + (float)GameLib.WIDTH / 2, (float)GameLib.HEIGHT / 2, 15);
         this.rotationVelocity = 0.0015;
         this.vx = 0.15;
         this.vy = 0.00;
         this.shootDelay = 33; // ms
 
-        this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.maxHealth = health;
+        this.currentHealth = health;
     }
 
     protected void draw(double x, double y, double outerRadius, double innerRadius, int points) {
@@ -57,11 +57,9 @@ public class Boss2 extends Boss {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(context);
             return;
         }
 

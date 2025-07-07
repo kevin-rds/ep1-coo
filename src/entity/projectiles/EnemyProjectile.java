@@ -2,7 +2,7 @@ package entity.projectiles;
 
 import lib.GameLib;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class EnemyProjectile extends Projectile {
 

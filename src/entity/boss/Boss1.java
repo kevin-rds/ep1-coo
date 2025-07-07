@@ -1,11 +1,11 @@
 package entity.boss;
 
-import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
 import java.awt.*;
-import java.util.List;
+
 
 public class Boss1 extends Boss {
 
@@ -13,14 +13,14 @@ public class Boss1 extends Boss {
     private final double shieldDistance = 150;
     private final double shieldRadius = 15;
 
-    public Boss1() {
-        super(Math.random() * 20.0 + GameLib.WIDTH / 2, GameLib.HEIGHT / 3, 15);
+    public Boss1(int health, double x, double y) {
+        super(x, y, 15);
         this.rotationVelocity = 0.0015;
         this.vx = 0.05;
         this.vy = 0.05;
 
-        this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.maxHealth = health;
+        this.currentHealth = health;
 
         createShieldRing();
     }
@@ -50,11 +50,9 @@ public class Boss1 extends Boss {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(context);
             return;
         }
 
@@ -64,7 +62,7 @@ public class Boss1 extends Boss {
         GameLib.drawDiamond(x, y, radius);
 
         for (ShieldSegment s : shields) {
-            s.render(currentTime);
+            s.render(context);
         }
 
         renderHealthBar(x, y, radius);

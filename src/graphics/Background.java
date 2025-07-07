@@ -1,10 +1,12 @@
 package graphics;
 
+import game.Renderable;
+import game.context.GameContext;
 import lib.GameLib;
 
 import java.awt.Color;
 
-public class Background {
+public class Background implements Renderable {
     private final double[] x, y; // coordenadas x e y
     private final double speed;
     private double count;
@@ -26,9 +28,10 @@ public class Background {
         }
     }
 
-    public void render(long delta) {
+    @Override
+    public void render(GameContext context) {
         GameLib.setColor(color);
-        count += speed * delta;
+        count += speed * context.getDelta();
 
         for (int i = 0; i < x.length; i++) {
             GameLib.fillRect(x[i], (y[i] + count) % GameLib.HEIGHT, size, size);

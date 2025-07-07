@@ -53,6 +53,7 @@ public class GameLib {
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setResizable(false);
 		frame.setVisible(true);
+		frame.toFront();
 		
 		keyboard = new MyKeyAdapter();
 		frame.addKeyListener(keyboard);
@@ -69,6 +70,7 @@ public class GameLib {
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setResizable(false);
 		frame.setVisible(true);
+		frame.toFront();
 		
 		keyboard = new MyKeyAdapter();
 		frame.addKeyListener(keyboard);

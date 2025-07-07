@@ -3,6 +3,7 @@ package entity.enemy;
 import entity.Entity;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -52,7 +53,7 @@ public class Enemy2 extends Enemy {
         double threshold = GameLib.HEIGHT * 0.30;
 
         if (previousY < threshold && y >= threshold) {
-            if(x < GameLib.WIDTH / 2) rotationVelocity = 0.003;
+            if(x < (float)GameLib.WIDTH / 2) rotationVelocity = 0.003;
             else rotationVelocity = -0.003;
         }
 
@@ -83,10 +84,9 @@ public class Enemy2 extends Enemy {
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(context);
         }
 
         if (state == State.ACTIVE) {

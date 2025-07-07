@@ -3,6 +3,7 @@ package entity.enemy;
 import entity.Entity;
 import entity.projectiles.EnemyProjectile;
 import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -40,18 +41,15 @@ public class Enemy1 extends Enemy {
             double vx = Math.cos(angle) * 0.45;
             double vy = Math.sin(angle) * 0.45 * (-1.0);
 
-            // TODO ver se o add verifica se o array esta cheio antes de inserir
             projectiles.add(new EnemyProjectile(x, y, vx, vy, Color.RED));
             nextShoot = currentTime + 200 + (long) (Math.random() * 500);
         }
     }
 
     @Override
-    public void render(long currentTime) {
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(context);
         }
 
         if (state == State.ACTIVE) {

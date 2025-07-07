@@ -1,6 +1,7 @@
 package entity.projectiles;
 
 import entity.Entity;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
@@ -17,18 +18,20 @@ public abstract class Projectile extends Entity {
         this.color = color;
     }
 
-    public void update(long delta) {
+    @Override
+    public void update(GameContext context) {
         if (state == State.ACTIVE) {
             /* verificando se projétil saiu da tela */
             if (isOffScreen()) setInactive();
             else {
-                x += vx * delta;
-                y += vy * delta;
+                x += vx * context.getDelta();
+                y += vy * context.getDelta();
             }
         }
     }
 
-    public void render() {
+    @Override
+    public void render(GameContext context) {
         if (state == State.ACTIVE) {
             GameLib.setColor(color);
             doRender();

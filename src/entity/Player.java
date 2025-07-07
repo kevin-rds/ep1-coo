@@ -1,24 +1,21 @@
 package entity;
 
-import entity.projectiles.Projectile;
+import game.context.GameContext;
 import lib.GameLib;
+import powerup.InvincibilityPowerUp;
 import powerup.PowerUp;
 import powerup.PowerUpManager;
 import strategy.shooting.ShootingStrategy;
 import strategy.shooting.SingleShotStrategy;
 import util.State;
 
-import java.awt.*;
-import java.util.List;
+import java.awt.Color;
 
 public class Player extends Entity {
     private double vx = 0.25;
     private double vy = 0.25;
     private long nextShotTime = 0;
-    private long explosionStart;
-    private long explosionEnd;
     private boolean invincible = false;
-    private long invincibleEndTime = 0;
     private ShootingStrategy shootingStrategy = new SingleShotStrategy();
     private final PowerUpManager powerUpManager = new PowerUpManager();
 
@@ -29,14 +26,18 @@ public class Player extends Entity {
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
 
-    public void update(long delta, long currentTime, List<Projectile> projectiles) {
-        if (this.invincible && currentTime > this.invincibleEndTime) {
-            this.setInvincible(false);
-        }
+    @Override
+    public void update(GameContext context) {
+        long delta = context.getDelta();
+        long currentTime = context.getCurrentTime();
+
         /* Verificando se a explosão do player já acabou.         */
         /* Ao final da explosão, o player volta a ser controlável */
-        if (state == State.EXPLODING && currentTime > explosionEnd) {
-            this.state = State.INACTIVE;
+        if (state == State.EXPLODING) {
+            explosion.update(context);
+            if(!explosion.isActive()){
+                this.state = State.INACTIVE;
+            }
         }
 
         /********************************************/
@@ -52,7 +53,7 @@ public class Player extends Entity {
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
                 if (currentTime > nextShotTime) {
-                    shootingStrategy.shoot(this, projectiles);
+                    shootingStrategy.shoot(this, context.getProjectiles());
                     nextShotTime = currentTime + 100;
                 }
             }
@@ -67,15 +68,15 @@ public class Player extends Entity {
     }
 
     public void explode(long currentTime) {
-        state = State.EXPLODING;
-        explosionStart = currentTime;
-        explosionEnd = currentTime + 2000;
+        super.explode(currentTime, 2000);
     }
 
-    public void render(long currentTime) {
+    @Override
+    public void render(GameContext context) {
+        long currentTime = context.getCurrentTime();
+
         if (state == State.EXPLODING) { //
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart); //
-            GameLib.drawExplosion(x, y, alpha); //
+            explosion.render(context);
         } else if (state == State.ACTIVE) {
             // Lógica de piscar quando invencível
             if (invincible) {
@@ -96,8 +97,8 @@ public class Player extends Entity {
         this.setX(GameLib.WIDTH / 2.0);
         this.setY(GameLib.HEIGHT * 0.90);
         this.setActive();
-        this.setInvincible(true);
-        this.invincibleEndTime = currentTime + 2000; // O próprio Player define seu tempo!
+
+        this.addPowerUp(new InvincibilityPowerUp(currentTime, 2000));
     }
 
     public void setShootingStrategy(ShootingStrategy strategy) {

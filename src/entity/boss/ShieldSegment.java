@@ -1,16 +1,15 @@
 package entity.boss;
 
 import entity.Entity;
+import game.context.GameContext;
 import lib.GameLib;
 import util.State;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class ShieldSegment extends Entity {
 
     private final double baseAngle;
-    private long explosionStart; // instantes dos inícios das explosões
-    private long explosionEnd; // instantes dos finais da explosões
     private long delayedExplosionStart = -1;
 
     ShieldSegment(double x, double y, double radius, double baseAngle) {
@@ -18,9 +17,14 @@ public class ShieldSegment extends Entity {
         this.baseAngle = baseAngle;
     }
 
-    public void update(long currentTime) {
-        if (state == State.EXPLODING && currentTime > explosionEnd) {
-            setInactive();
+    @Override
+    public void update(GameContext context) {
+        long currentTime = context.getCurrentTime();
+        if (state == State.EXPLODING) {
+            explosion.update(context);
+            if (!explosion.isActive()) {
+                setInactive();
+            }
         }
 
         if (delayedExplosionStart != -1 && currentTime > delayedExplosionStart) {
@@ -28,11 +32,10 @@ public class ShieldSegment extends Entity {
         }
     }
 
-    public void render(long currentTime) {
+    @Override
+    public void render(GameContext context) {
         if (state == State.EXPLODING) {
-            // TODO encapsular essa logica de explosion
-            double alpha = (double) (currentTime - explosionStart) / (explosionEnd - explosionStart);
-            GameLib.drawExplosion(x, y, alpha);
+            explosion.render(context);
         }
 
         if (state == State.ACTIVE) {
@@ -55,13 +58,7 @@ public class ShieldSegment extends Entity {
     }
 
     public void explode(long currentTime) {
-        state = State.EXPLODING;
-        explosionStart = currentTime;
-        explosionEnd = currentTime + 700;
+        super.explode(currentTime, 700);
         delayedExplosionStart = -1;
-    }
-
-    public long getExplosionEnd() {
-        return explosionEnd;
     }
 }

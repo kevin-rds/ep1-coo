@@ -18,12 +18,12 @@ public class PowerUpManager {
 
     public void update(Player player, long currentTime) {
         Iterator<PowerUp> iterator = activePowerUps.iterator();
-        System.out.println(activePowerUps);
+
         while (iterator.hasNext()) {
             PowerUp powerUp = iterator.next();
             powerUp.update(player, currentTime);
             if (powerUp.isExpired()) {
-                iterator.remove(); // let powerUp handle its own expiration effects
+                iterator.remove();
             }
         }
     }
